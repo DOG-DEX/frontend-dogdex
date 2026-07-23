@@ -1,5 +1,4 @@
 import { getRequestConfig } from "next-intl/server";
-import { headers } from "next/headers";
 import { routing } from "./routing";
 
 export default getRequestConfig(async ({ requestLocale }) => {
@@ -9,66 +8,36 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale = routing.defaultLocale;
   }
 
-  const headersList = await headers();
-  const pathname = headersList.get("x-pathname") || "";
-
   const commonMessages = (
     await import(`../components/messages/${locale}.json`)
   ).default;
 
-  let featureMessages: Record<string, unknown> = {};
-
-  let normalizedPath = pathname;
-  if (normalizedPath.startsWith(`/${locale}`)) {
-    normalizedPath = normalizedPath.slice(locale.length + 1);
-  }
-  if (normalizedPath === "") {
-    normalizedPath = "/";
-  }
-
-  try {
-    if (normalizedPath === "/") {
-      featureMessages = (
-        await import(`../features/home/messages/${locale}.json`)
-      ).default;
-    } else if (normalizedPath.startsWith("/dex")) {
-      featureMessages = (
-        await import(`../features/dogs/messages/${locale}.json`)
-      ).default;
-    } else if (normalizedPath.startsWith("/scan")) {
-      featureMessages = (
-        await import(`../features/scan/messages/${locale}.json`)
-      ).default;
-    } else if (
-      normalizedPath.startsWith("/login") ||
-      normalizedPath.startsWith("/register")
-    ) {
-      featureMessages = (
-        await import(`../features/auth/messages/${locale}.json`)
-      ).default;
-    } else if (normalizedPath.startsWith("/profile")) {
-      featureMessages = (
-        await import(`../features/profile/messages/${locale}.json`)
-      ).default;
+  const loadModuleMessages = async (path: string) => {
+    try {
+      return (await import(`../features/${path}/messages/${locale}.json`)).default;
+    } catch {
+      return {};
     }
+  };
 
-    if (Object.keys(featureMessages).length === 0) {
-      featureMessages = (
-        await import(`../features/home/messages/${locale}.json`)
-      ).default;
-    }
-  } catch (error) {
-    console.error(
-      `Failed to load messages for pathname: ${pathname} (${normalizedPath}), locale: ${locale}`,
-      error,
-    );
-  }
+  const [homeMessages, authMessages, dogsMessages, scanMessages, profileMessages] =
+    await Promise.all([
+      loadModuleMessages("home"),
+      loadModuleMessages("auth"),
+      loadModuleMessages("dogs"),
+      loadModuleMessages("scan"),
+      loadModuleMessages("profile"),
+    ]);
 
   return {
     locale,
     messages: {
       ...commonMessages,
-      ...featureMessages,
+      ...homeMessages,
+      ...authMessages,
+      ...dogsMessages,
+      ...scanMessages,
+      ...profileMessages,
     },
   };
 });

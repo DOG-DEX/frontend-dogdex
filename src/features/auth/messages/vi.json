@@ -1,10 +1,44 @@
 {
   "LoginView": {
-    "title": "Đăng nhập",
-    "description": "Truy cập bộ sưu tập và lịch sử quét của bạn."
+    "title": "Chào mừng trở lại",
+    "subtitle": "Đăng nhập để quản lý đàn cún của bạn.",
+    "continueWithGoogle": "Tiếp tục với Google",
+    "continueWithApple": "Tiếp tục với Apple",
+    "orDivider": "HOẶC",
+    "emailLabel": "Địa chỉ Email",
+    "emailPlaceholder": "woof@example.com",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Quên mật khẩu?",
+    "submitBtn": "Đăng nhập →",
+    "dontHaveAccount": "Chưa có tài khoản?",
+    "signUp": "Đăng ký"
   },
   "RegisterView": {
-    "title": "Tạo tài khoản",
-    "description": "Bắt đầu xây dựng bộ sưu tập giống cá nhân."
+    "sidebarTitle": "Tham gia DogDex",
+    "sidebarDesc": "Hộ chiếu số và còi báo động khẩn cấp cho thú cún của bạn.",
+    "feature1Title": "Tạo Hồ Sơ",
+    "feature1Desc": "Thêm hình ảnh, hồ sơ y tế và các chỉ số sức khỏe cho cún cưng.",
+    "feature2Title": "Nhận Thẻ QR",
+    "feature2Desc": "Liên kết thẻ QR vật lý với hồ sơ số để quét thông tin tức thì.",
+    "feature3Title": "Giữ An Toàn",
+    "feature3Desc": "Kích hoạt chế độ khẩn cấp ngay nếu cún bị lạc để thông báo cho cộng đồng.",
+    "title": "Tạo Tài Khoản",
+    "subtitle": "Bắt đầu xây dựng mạng lưới an toàn kỹ thuật số cho cún cưng ngay hôm nay.",
+    "firstNameLabel": "Tên",
+    "firstNamePlaceholder": "Jane",
+    "lastNameLabel": "Họ",
+    "lastNamePlaceholder": "Doe",
+    "emailLabel": "Địa chỉ Email",
+    "emailPlaceholder": "jane@example.com",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "••••••••",
+    "termsAgree": "Tôi đồng ý với",
+    "termsOfService": "Điều khoản dịch vụ",
+    "andText": "và",
+    "privacyPolicy": "Chính sách bảo mật",
+    "submitBtn": "Đăng ký tài khoản",
+    "alreadyHaveAccount": "Đã có tài khoản?",
+    "logInLink": "Đăng nhập tại đây"
   }
 }
