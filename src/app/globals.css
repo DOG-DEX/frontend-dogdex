@@ -66,7 +66,7 @@ body {
 }
 
 /* ==========================================================================
-   4. UTILITY HELPER CLASSES (Pure Evil Web Reusable Utilities)
+   4. UTILITY HELPER CLASSES
    ========================================================================== */
 @layer utilities {
   .border-brutal {
@@ -129,4 +129,52 @@ body {
     border-radius: 1rem;
     border: 2px solid var(--border-dark);
   }
+}
+
+/* ==========================================================================
+   5. YET-ANOTHER-REACT-LIGHTBOX (Apple Glassmorphism + Frame Fix)
+   ========================================================================== */
+.yarl__container {
+  background-color: rgba(18, 24, 20, 0.70) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+}
+
+.yarl__toolbar {
+  padding: 16px !important;
+}
+
+.yarl__button {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  color: #1A1C1B !important;
+  border: 2px solid #1A1C1B !important;
+  border-radius: 9999px !important;
+  box-shadow: 3px 3px 0px #1A1C1B !important;
+  margin-left: 8px !important;
+  padding: 8px !important;
+  transition: transform 0.15s ease, background-color 0.15s ease !important;
+}
+
+.yarl__button:hover {
+  background-color: #FFFFFF !important;
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 4px 4px 0px #1A1C1B !important;
+}
+
+.yarl__button:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 1px 1px 0px #1A1C1B !important;
+}
+
+/* Lightbox Image Frame Correction */
+.yarl__slide_image {
+  max-width: 82vw !important;
+  max-height: 78vh !important;
+  object-fit: contain !important;
+  border-radius: 28px !important;
+  border: 4px solid #1A1C1B !important;
+  box-shadow: 12px 12px 0px #1A1C1B !important;
+  background-color: #FAF9F7 !important;
 }

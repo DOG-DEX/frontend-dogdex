@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 /**
  * HowItWorks Component
  * Demonstrates the 3-step lost dog prevention workflow.
- * Uses bold Neo-Brutalist numerical indicators (01, 02, 03) instead of icons.
+ * Uses bold Neo-Brutalist numerical indicators (01, 02, 03) and calibrated typography.
  */
 export function HowItWorks() {
   const t = useTranslations("HomeView");
@@ -32,10 +32,10 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="flex flex-col gap-12 py-12">
-      {/* Section Title */}
+    <section className="flex flex-col gap-10 py-8">
+      {/* Section Title (Calibrated to text-2xl md:text-4xl) */}
       <div className="text-center">
-        <h2 className="text-3xl font-black uppercase tracking-wider text-[#232B26] md:text-5xl">
+        <h2 className="text-2xl font-black uppercase tracking-wider text-[#1A1C1B] md:text-4xl">
           {t("howItWorksTitle")}
         </h2>
       </div>
@@ -49,19 +49,19 @@ export function HowItWorks() {
           >
             {/* Step Number Badge */}
             <div
-              className={`flex h-20 w-20 items-center justify-center rounded-2xl border-4 border-[#232B26] ${step.bgColor} shadow-brutal-sm`}
+              className={`flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-[#1A1C1B] ${step.bgColor} shadow-brutal-sm`}
             >
-              <span className="font-mono text-2xl font-black text-white">
+              <span className="font-mono text-xl font-black text-white">
                 {step.stepNumber}
               </span>
             </div>
 
             {/* Step Content */}
-            <h3 className="text-2xl font-extrabold text-[#232B26]">
+            <h3 className="text-xl font-extrabold text-[#1A1C1B]">
               {step.title}
             </h3>
 
-            <p className="text-base font-bold text-[#232B26]/80">
+            <p className="text-sm font-medium text-[#1A1C1B]/80">
               {step.desc}
             </p>
           </div>
