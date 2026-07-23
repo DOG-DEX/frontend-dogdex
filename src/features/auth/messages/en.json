@@ -1,0 +1,10 @@
+{
+  "LoginView": {
+    "title": "Sign in",
+    "description": "Access your breed collection and scan history."
+  },
+  "RegisterView": {
+    "title": "Create account",
+    "description": "Start building your personal breed dex."
+  }
+}

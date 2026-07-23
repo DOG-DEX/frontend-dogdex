@@ -1,0 +1,13 @@
+{
+  "SiteNav": {
+    "home": "Trang chủ",
+    "dex": "Bộ sưu tập",
+    "scan": "Quét",
+    "profile": "Hồ sơ",
+    "login": "Đăng nhập"
+  },
+  "SiteFooter": {
+    "tagline": "Khám phá mọi giống chó.",
+    "copyright": "Dog Dex. Bảo lưu mọi quyền."
+  }
+}

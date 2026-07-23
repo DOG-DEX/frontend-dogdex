@@ -1,0 +1,13 @@
+{
+  "SiteNav": {
+    "home": "Home",
+    "dex": "Breed Dex",
+    "scan": "Scan",
+    "profile": "Profile",
+    "login": "Sign in"
+  },
+  "SiteFooter": {
+    "tagline": "Discover every breed.",
+    "copyright": "Dog Dex. All rights reserved."
+  }
+}
