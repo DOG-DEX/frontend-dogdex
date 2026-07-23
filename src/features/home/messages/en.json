@@ -1,7 +1,26 @@
 {
   "HomeView": {
-    "eyebrow": "Dog Dex",
-    "title": "Identify breeds. Build your collection.",
-    "description": "Upload a photo to scan a dog breed, then unlock entries in your personal breed dex."
+    "liveBadge": "142+ DOGS SAFELY RECONNECTED",
+    "hardwareBadge": "OFFICIAL DOG DEX HARDWARE",
+    "module01Title": "Never Lose\nYour Dog.",
+    "module01Sub": "The smartest QR collar tag for modern pet parents.",
+    "module01Cta": "Create Collar Tag (150.000đ)",
+    "specMaterial": "AIRCRAFT STAINLESS STEEL",
+    "specScan": "SCAN TO RECONNECT",
+    "specWaterproof": "IP68 WATERPROOF",
+    "module02Tag": "MODULE 02",
+    "module02Title": "Lost Dog Radar",
+    "module02Sub": "Real-time alerts in your neighborhood.",
+    "module02Cta": "REPORT LOST DOG",
+    "module03Tag": "MODULE 03",
+    "module03Title": "AI Breed Scanner",
+    "module03Sub": "Identify any dog instantly",
+    "howItWorksTitle": "HOW IT WORKS",
+    "step1Title": "1. Attach Tag",
+    "step1Sub": "Secure the smart QR tag to your dog's collar.",
+    "step2Title": "2. Finder Scans",
+    "step2Sub": "Anyone who finds them can scan with their phone.",
+    "step3Title": "3. Get Alert",
+    "step3Sub": "Receive instant GPS location alerts on your phone."
   }
 }

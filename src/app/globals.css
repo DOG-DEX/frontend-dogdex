@@ -1,26 +1,132 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   1. DESIGN TOKENS (Neo-Brutalist Pop Palette for Dog Dex)
+   ========================================================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surface & Base Colors (Fixed Neo-Brutalist Palette from Figma) */
+  --background: #F0EDE6;
+  --foreground: #232B26;
+  --surface-white: #FFFFFF;
+  --border-dark: #232B26;
+
+  /* Accent Modules */
+  --brand-mint: #85E0C0;
+  --brand-peach: #FFD6A5;
+  --brand-teal: #00A170;
+  --brand-orange: #FF6B00;
+  --brand-red: #FF3B30;
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+
+  /* Brutalist Shadows */
+  --shadow-brutal-sm: 4px 4px 0px #232B26;
+  --shadow-brutal-lg: 8px 8px 0px #232B26;
 }
 
+/* ==========================================================================
+   2. TAILWIND V4 THEME EXTENSIONS
+   ========================================================================== */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface-white: var(--surface-white);
+  --color-border-dark: var(--border-dark);
+
+  --color-brand-mint: var(--brand-mint);
+  --color-brand-peach: var(--brand-peach);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-red: var(--brand-red);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --shadow-brutal-sm: var(--shadow-brutal-sm);
+  --shadow-brutal-lg: var(--shadow-brutal-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ==========================================================================
+   3. BASE RESETS & TYPOGRAPHY
+   ========================================================================== */
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #F0EDE6 !important;
+  color: #232B26 !important;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Custom Selection Highlight */
+::selection {
+  background-color: var(--brand-orange);
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   4. UTILITY HELPER CLASSES (Pure Evil Web Reusable Utilities)
+   ========================================================================== */
+@layer utilities {
+  .border-brutal {
+    border: 4px solid var(--border-dark);
+  }
+
+  .border-brutal-sm {
+    border: 2px solid var(--border-dark);
+  }
+
+  .shadow-brutal-sm {
+    box-shadow: 4px 4px 0px var(--border-dark);
+  }
+
+  .shadow-brutal-lg {
+    box-shadow: 8px 8px 0px var(--border-dark);
+  }
+
+  .card-brutal {
+    border: 4px solid var(--border-dark);
+    box-shadow: 8px 8px 0px var(--border-dark);
+    border-radius: 1rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .card-brutal:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 0px var(--border-dark);
+  }
+
+  .btn-brutal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid var(--border-dark);
+    box-shadow: 4px 4px 0px var(--border-dark);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: transform 0.10s ease, box-shadow 0.10s ease;
+    cursor: pointer;
+  }
+
+  .btn-brutal:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--border-dark);
+  }
+
+  .btn-brutal:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--border-dark);
+  }
+
+  .badge-module {
+    display: inline-flex;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 1rem;
+    border: 2px solid var(--border-dark);
+  }
 }
