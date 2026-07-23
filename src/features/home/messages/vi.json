@@ -1,7 +1,26 @@
 {
   "HomeView": {
-    "eyebrow": "Dog Dex",
-    "title": "Nhận diện giống. Xây bộ sưu tập của bạn.",
-    "description": "Tải ảnh lên để quét giống chó, sau đó mở khóa từng mục trong bộ sưu tập cá nhân."
+    "liveBadge": "142+ CHÚ CHÓ ĐÃ KẾT NỐI AN TOÀN",
+    "hardwareBadge": "THIẾT BỊ CHÍNH HÃNG DOG DEX",
+    "module01Title": "Bảo Vệ Chó\nCủa Bạn.",
+    "module01Sub": "Thẻ cổ áo QR thông minh cho chủ nuôi hiện đại.",
+    "module01Cta": "Tạo Thẻ Cổ Áo (150.000đ)",
+    "specMaterial": "THÉP HÀNG KHÔNG KHÔNG GỈ",
+    "specScan": "QUÉT ĐỂ KẾT NỐI VỊ TRÍ",
+    "specWaterproof": "CHỐNG NƯỚC IP68",
+    "module02Tag": "MODULE 02",
+    "module02Title": "Radar Tìm Chó Lạc",
+    "module02Sub": "Cảnh báo thời gian thực xung quanh bạn.",
+    "module02Cta": "BÁO CHÓ LẠC",
+    "module03Tag": "MODULE 03",
+    "module03Title": "AI Nhận Diện Giống",
+    "module03Sub": "Nhận diện mọi giống chó tức thì",
+    "howItWorksTitle": "CÁCH THỨC HOẠT ĐỘNG",
+    "step1Title": "1. Gắn Thẻ",
+    "step1Sub": "Gắn thẻ QR thông minh vào vòng cổ của chú chó.",
+    "step2Title": "2. Quét Thẻ",
+    "step2Sub": "Người tìm thấy chỉ cần dùng điện thoại quét mã QR.",
+    "step3Title": "3. Nhận Cảnh Báo",
+    "step3Sub": "Nhận ngay thông báo vị trí GPS trên điện thoại của bạn."
   }
 }

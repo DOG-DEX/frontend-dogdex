@@ -1,0 +1,72 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
+/**
+ * HowItWorks Component
+ * Demonstrates the 3-step lost dog prevention workflow.
+ * Uses bold Neo-Brutalist numerical indicators (01, 02, 03) instead of icons.
+ */
+export function HowItWorks() {
+  const t = useTranslations("HomeView");
+
+  const steps = [
+    {
+      stepNumber: "01",
+      bgColor: "bg-[#FF6B00]",
+      title: t("step1Title"),
+      desc: t("step1Sub"),
+    },
+    {
+      stepNumber: "02",
+      bgColor: "bg-[#00A170]",
+      title: t("step2Title"),
+      desc: t("step2Sub"),
+    },
+    {
+      stepNumber: "03",
+      bgColor: "bg-[#FF3B30]",
+      title: t("step3Title"),
+      desc: t("step3Sub"),
+    },
+  ];
+
+  return (
+    <section className="flex flex-col gap-12 py-12">
+      {/* Section Title */}
+      <div className="text-center">
+        <h2 className="text-3xl font-black uppercase tracking-wider text-[#232B26] md:text-5xl">
+          {t("howItWorksTitle")}
+        </h2>
+      </div>
+
+      {/* 3 Step Process Grid */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {steps.map((step) => (
+          <div
+            key={step.stepNumber}
+            className="card-brutal flex flex-col items-center gap-4 bg-white p-6 text-center md:p-8"
+          >
+            {/* Step Number Badge */}
+            <div
+              className={`flex h-20 w-20 items-center justify-center rounded-2xl border-4 border-[#232B26] ${step.bgColor} shadow-brutal-sm`}
+            >
+              <span className="font-mono text-2xl font-black text-white">
+                {step.stepNumber}
+              </span>
+            </div>
+
+            {/* Step Content */}
+            <h3 className="text-2xl font-extrabold text-[#232B26]">
+              {step.title}
+            </h3>
+
+            <p className="text-base font-bold text-[#232B26]/80">
+              {step.desc}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}

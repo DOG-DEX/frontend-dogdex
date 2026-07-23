@@ -45,10 +45,10 @@ export default async function LocaleLayout({
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col bg-[#F0EDE6] text-[#232B26]">
         <NextIntlClientProvider messages={messages}>
           <SiteNav />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 bg-[#F0EDE6]">{children}</main>
           <SiteFooter />
         </NextIntlClientProvider>
       </body>
