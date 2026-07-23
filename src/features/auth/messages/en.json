@@ -1,10 +1,44 @@
 {
   "LoginView": {
-    "title": "Sign in",
-    "description": "Access your breed collection and scan history."
+    "title": "Welcome Back",
+    "subtitle": "Log in to manage your pack.",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "orDivider": "OR",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "woof@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Forgot password?",
+    "submitBtn": "Log In →",
+    "dontHaveAccount": "Don't have an account?",
+    "signUp": "Sign up"
   },
   "RegisterView": {
-    "title": "Create account",
-    "description": "Start building your personal breed dex."
+    "sidebarTitle": "Join DogDex",
+    "sidebarDesc": "Your pet's digital passport and emergency beacon in one secure place.",
+    "feature1Title": "Create Profile",
+    "feature1Desc": "Add photos, medical records, and vital stats for your furry friend.",
+    "feature2Title": "Get Your Tag",
+    "feature2Desc": "Link a physical QR tag to your pet's digital profile for instant scanning.",
+    "feature3Title": "Stay Safe",
+    "feature3Desc": "Activate emergency mode instantly if your pet goes missing to alert the community.",
+    "title": "Create Account",
+    "subtitle": "Start building your pet's digital safety net today.",
+    "firstNameLabel": "First Name",
+    "firstNamePlaceholder": "Jane",
+    "lastNameLabel": "Last Name",
+    "lastNamePlaceholder": "Doe",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "jane@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "termsAgree": "I agree to the",
+    "termsOfService": "Terms of Service",
+    "andText": "and",
+    "privacyPolicy": "Privacy Policy",
+    "submitBtn": "Register Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "logInLink": "Log in here"
   }
 }
