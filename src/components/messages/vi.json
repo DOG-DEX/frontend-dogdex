@@ -4,7 +4,11 @@
     "dex": "Bộ sưu tập",
     "scan": "Quét",
     "profile": "Hồ sơ",
-    "login": "Đăng nhập"
+    "login": "Đăng nhập",
+    "quickScan": "Quét",
+    "notif": "Thông báo",
+    "menu": "Menu",
+    "close": "Đóng"
   },
   "SiteFooter": {
     "tagline": "Khám phá mọi giống chó.",

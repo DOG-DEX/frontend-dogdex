@@ -1,24 +1,83 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { RetroGameScreen } from "../components/RetroGameScreen";
+import { authService } from "../services/auth.service";
+import { useToast } from "@/components/ToastContext";
 
 /**
  * LoginView Component
- * Neo-Brutalist split layout matching RegisterView specs.
- * Left panel: Email / Password / Social Login form.
- * Right panel: Retro Game Boy Console with Dog Mini-game.
+ * Neo-Brutalist split layout connected to NestJS Backend Auth API (/api/auth/login).
+ * Persists pending success toast to sessionStorage so it fires on Home page after navigation.
  */
 export function LoginView() {
   const t = useTranslations("LoginView");
+  const router = useRouter();
+  const { toast } = useToast();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: FormEvent) => {
+  // Submit button cooldown state to prevent button spamming
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => {
+      setCooldown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Logging in with:", { email, password });
+    if (cooldown > 0) return;
+
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    setIsLoading(true);
+
+    try {
+      const response = await authService.login({ email, password });
+
+      // Save pending success toast payload to sessionStorage so it triggers ON the Home page AFTER navigation
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(
+          "pendingSuccessToast",
+          JSON.stringify({
+            title: "WELCOME BACK, TRAINER!",
+            message: "Your daily streak is now at 5 days. Keep it up!",
+            badge: "NOW",
+            duration: 5000,
+          })
+        );
+      }
+
+      setSuccessMessage(response.message || "Login successful!");
+
+      // Navigate immediately to home page
+      router.push("/");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "An unexpected error occurred.";
+      setErrorMessage(msg);
+
+      // Trigger compact Error Toast with Dev Mode technical log details & 3.5s duration
+      toast.error("LOGIN FAILED", msg, {
+        badge: "NOW",
+        duration: 3500,
+        details: `Endpoint: POST /api/auth/login\nStatus: 400/401 Unauthorized\nError: ${msg}\nTimestamp: ${new Date().toISOString()}`,
+      });
+
+      // Lock submit button for 3 seconds matching the error progress bar to prevent spam
+      setCooldown(3);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -35,13 +94,24 @@ export function LoginView() {
             </p>
           </div>
 
+          {/* Alert Messages */}
+          {errorMessage && (
+            <div className="mb-4 rounded-xl border-2 border-[#232B26] bg-[#FF3B30] p-3 text-xs font-black uppercase text-white shadow-[2px_2px_0px_#232B26]">
+              {errorMessage}
+            </div>
+          )}
+          {successMessage && (
+            <div className="mb-4 rounded-xl border-2 border-[#232B26] bg-[#00A170] p-3 text-xs font-black uppercase text-white shadow-[2px_2px_0px_#232B26]">
+              {successMessage}
+            </div>
+          )}
+
           {/* Social Authentication Buttons */}
-          <div className="mt-3 flex flex-col gap-2.5">
+          <div className="mt-2 flex flex-col gap-2.5">
             <button
               type="button"
               className="btn-brutal flex w-full items-center justify-center gap-2.5 rounded-xl border-4 border-[#232B26] bg-white py-2.5 text-xs font-extrabold text-[#232B26] shadow-[4px_4px_0px_#232B26] transition-all hover:bg-zinc-50 active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_#232B26] sm:text-sm"
             >
-              {/* Google Icon SVG */}
               <svg className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
@@ -67,7 +137,6 @@ export function LoginView() {
               type="button"
               className="btn-brutal flex w-full items-center justify-center gap-2.5 rounded-xl border-4 border-[#232B26] bg-white py-2.5 text-xs font-extrabold text-[#232B26] shadow-[4px_4px_0px_#232B26] transition-all hover:bg-zinc-50 active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_#232B26] sm:text-sm"
             >
-              {/* Apple Icon SVG */}
               <svg className="h-4 w-4 fill-current text-[#232B26] sm:h-5 sm:w-5" viewBox="0 0 24 24">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.32c.67-.82 1.13-1.96.99-3.12-1 .04-2.18.67-2.88 1.49-.62.72-1.16 1.88-1.01 3.01 1.12.09 2.23-.56 2.9-1.38z" />
               </svg>
@@ -76,7 +145,7 @@ export function LoginView() {
           </div>
 
           {/* Divider */}
-          <div className="my-3.5 flex items-center justify-center gap-3">
+          <div className="my-3 flex items-center justify-center gap-3">
             <div className="h-[2px] flex-1 bg-[#232B26]" />
             <span className="font-mono text-xs font-black uppercase tracking-wider text-[#404944]">
               {t("orDivider")}
@@ -130,11 +199,19 @@ export function LoginView() {
               </div>
             </div>
 
+            {/* Submit Button with Cooldown Lock */}
             <button
               type="submit"
-              className="btn-brutal mt-1 flex w-full items-center justify-center gap-2 rounded-xl border-4 border-[#232B26] bg-[#00A170] py-2.5 text-center text-base font-extrabold text-white shadow-[4px_4px_0px_#232B26] transition-all hover:bg-[#008f63] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_#232B26]"
+              disabled={isLoading || cooldown > 0}
+              className="btn-brutal mt-1 flex w-full items-center justify-center gap-2 rounded-xl border-4 border-[#232B26] bg-[#00A170] py-2.5 text-center text-base font-extrabold text-white shadow-[4px_4px_0px_#232B26] transition-all hover:bg-[#008f63] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_#232B26] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>{t("submitBtn")}</span>
+              <span>
+                {isLoading
+                  ? "Signing in..."
+                  : cooldown > 0
+                  ? `Please wait (${cooldown}s)...`
+                  : t("submitBtn")}
+              </span>
             </button>
           </form>
 

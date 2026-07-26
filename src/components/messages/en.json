@@ -1,10 +1,14 @@
 {
   "SiteNav": {
     "home": "Home",
-    "dex": "Breed Dex",
+    "dex": "Collection",
     "scan": "Scan",
     "profile": "Profile",
-    "login": "Sign in"
+    "login": "Sign in",
+    "quickScan": "Scan",
+    "notif": "Notif",
+    "menu": "Menu",
+    "close": "Close"
   },
   "SiteFooter": {
     "tagline": "Discover every breed.",
