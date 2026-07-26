@@ -82,7 +82,7 @@ export function LoginView() {
 
   return (
     <section className="w-full max-w-4xl px-2 py-2">
-      <div className="grid w-full min-h-[560px] grid-cols-1 overflow-hidden rounded-3xl border-4 border-[#232B26] bg-white shadow-[10px_10px_0px_#232B26] md:grid-cols-12">
+      <div className="grid w-full min-h-[480px] grid-cols-1 overflow-hidden rounded-2xl border-4 border-[#232B26] bg-white shadow-[6px_6px_0px_#232B26] sm:min-h-[560px] sm:rounded-3xl sm:shadow-[10px_10px_0px_#232B26] md:grid-cols-12">
         {/* Left Panel - Form */}
         <div className="flex flex-col justify-center p-5 sm:p-8 md:col-span-7">
           <div className="mb-4">
@@ -191,7 +191,7 @@ export function LoginView() {
               />
               <div className="mt-0.5 text-right">
                 <Link
-                  href="/login"
+                  href="/forgot-password"
                   className="text-[11px] font-extrabold text-[#00A170] underline underline-offset-2 hover:text-[#008f63] sm:text-xs"
                 >
                   {t("forgotPassword")}
@@ -227,8 +227,8 @@ export function LoginView() {
           </div>
         </div>
 
-        {/* Right Panel - Retro Game Boy Console */}
-        <div className="flex flex-col justify-between border-t-4 border-[#232B26] bg-[#A8D8B9] p-5 sm:p-7 md:col-span-5 md:border-t-0 md:border-l-4">
+        {/* Right Panel - Retro Game Boy Console (hidden on mobile) */}
+        <div className="hidden flex-col justify-between border-t-4 border-[#232B26] bg-[#A8D8B9] p-5 sm:p-7 md:col-span-5 md:flex md:border-t-0 md:border-l-4">
           <RetroGameScreen />
         </div>
       </div>

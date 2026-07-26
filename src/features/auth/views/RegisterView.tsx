@@ -164,9 +164,9 @@ export function RegisterView() {
 
   return (
     <section className="w-full max-w-4xl px-2 py-2">
-      <div className="grid w-full min-h-[560px] grid-cols-1 overflow-hidden rounded-3xl border-4 border-[#232B26] bg-white shadow-[10px_10px_0px_#232B26] md:grid-cols-12">
-        {/* Left Panel - Retro Game Boy Console */}
-        <div className="flex flex-col justify-between border-b-4 border-[#232B26] bg-[#A8D8B9] p-5 sm:p-7 md:col-span-5 md:border-b-0 md:border-r-4">
+      <div className="grid w-full min-h-[480px] grid-cols-1 overflow-hidden rounded-2xl border-4 border-[#232B26] bg-white shadow-[6px_6px_0px_#232B26] sm:min-h-[560px] sm:rounded-3xl sm:shadow-[10px_10px_0px_#232B26] md:grid-cols-12">
+        {/* Left Panel - Retro Game Boy Console (hidden on mobile) */}
+        <div className="hidden flex-col justify-between border-b-4 border-[#232B26] bg-[#A8D8B9] p-5 sm:p-7 md:col-span-5 md:flex md:border-b-0 md:border-r-4">
           <RetroGameScreen />
         </div>
 

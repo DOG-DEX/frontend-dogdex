@@ -13,7 +13,7 @@ export function ProductStage() {
   const t = useTranslations("HomeView");
 
   return (
-    <section className="group relative overflow-hidden rounded-[36px] border-4 border-[#1A1C1B] bg-gradient-to-br from-[#85E0C0] via-[#A8E8D0] to-[#6CD4AD] p-6 shadow-[10px_10px_0px_#1A1C1B] transition-all duration-300 md:p-10">
+    <section className="group relative overflow-hidden rounded-[24px] border-4 border-[#1A1C1B] bg-gradient-to-br from-[#85E0C0] via-[#A8E8D0] to-[#6CD4AD] p-5 shadow-[6px_6px_0px_#1A1C1B] transition-all duration-300 sm:rounded-[36px] sm:shadow-[10px_10px_0px_#1A1C1B] md:p-10">
       {/* Background Radial Lighting Halo */}
       <div className="absolute -right-24 -top-24 h-[400px] w-[400px] rounded-full bg-white/35 blur-3xl pointer-events-none" />
 
@@ -57,12 +57,12 @@ export function ProductStage() {
 
         {/* Right Side: Product Showcase Stage with Zoomable Image */}
         <div className="relative z-10 flex items-center justify-center lg:col-span-6">
-          <div className="relative flex h-[320px] w-full max-w-[360px] items-center justify-center md:h-[360px]">
+          <div className="relative flex h-[260px] w-full max-w-[300px] items-center justify-center sm:h-[320px] sm:max-w-[360px] md:h-[360px]">
             {/* Stage Outer Ring */}
             <div className="absolute inset-2 rounded-[36px] border-2 border-dashed border-[#1A1C1B]/35 bg-white/15" />
 
             {/* PRODUCT SHOWCASE BOX WITH ZOOMABLE IMAGE */}
-            <div className="relative h-[270px] w-[270px] rotate-2 overflow-hidden rounded-[32px] border-4 border-[#1A1C1B] bg-white shadow-[10px_10px_0px_#1A1C1B] transition-transform duration-500 group-hover:rotate-0 group-hover:scale-105 md:h-[320px] md:w-[320px]">
+            <div className="relative h-[220px] w-[220px] rotate-2 overflow-hidden rounded-[24px] border-4 border-[#1A1C1B] bg-white shadow-[6px_6px_0px_#1A1C1B] transition-transform duration-500 group-hover:rotate-0 group-hover:scale-105 sm:h-[270px] sm:w-[270px] sm:rounded-[32px] sm:shadow-[10px_10px_0px_#1A1C1B] md:h-[320px] md:w-[320px]">
               <ZoomableImage
                 src="/images/smart-qr-tag.png"
                 alt="Dog Dex Smart QR Collar Tag Hardware Showcase"
@@ -71,15 +71,15 @@ export function ProductStage() {
             </div>
 
             {/* Floating Spec Ribbon Badges */}
-            <div className="absolute -right-2 top-2 z-20 rounded-full border-2 border-[#1A1C1B] bg-white px-3 py-1 font-mono text-[10px] font-black uppercase text-[#1A1C1B] shadow-[2px_2px_0px_#1A1C1B]">
+            <div className="absolute -right-2 top-2 z-20 hidden rounded-full border-2 border-[#1A1C1B] bg-white px-3 py-1 font-mono text-[10px] font-black uppercase text-[#1A1C1B] shadow-[2px_2px_0px_#1A1C1B] sm:block">
               {t("specMaterial")}
             </div>
 
-            <div className="absolute -left-2 bottom-6 z-20 rounded-full border-2 border-[#1A1C1B] bg-[#FF6B00] px-3 py-1 font-mono text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_#1A1C1B]">
+            <div className="absolute -left-2 bottom-6 z-20 hidden rounded-full border-2 border-[#1A1C1B] bg-[#FF6B00] px-3 py-1 font-mono text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_#1A1C1B] sm:block">
               {t("specScan")}
             </div>
 
-            <div className="absolute -right-2 bottom-2 z-20 rounded-full border-2 border-[#1A1C1B] bg-[#00A170] px-3 py-1 font-mono text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_#1A1C1B]">
+            <div className="absolute -right-2 bottom-2 z-20 hidden rounded-full border-2 border-[#1A1C1B] bg-[#00A170] px-3 py-1 font-mono text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_#1A1C1B] sm:block">
               {t("specWaterproof")}
             </div>
           </div>

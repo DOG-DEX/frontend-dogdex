@@ -41,5 +41,28 @@
     "submitBtn": "Đăng ký tài khoản",
     "alreadyHaveAccount": "Đã có tài khoản?",
     "logInLink": "Đăng nhập tại đây"
+  },
+  "ForgotPasswordView": {
+    "title": "Khôi phục mật khẩu",
+    "subtitle": "Gửi mã xác nhận khôi phục đến email đã đăng ký của bạn.",
+    "step1Badge": "BƯỚC 1: YÊU CẦU MÃ",
+    "step2Badge": "BƯỚC 2: ĐẶT LẠI MẬT KHẨU",
+    "emailLabel": "Địa chỉ Email đã đăng ký",
+    "emailPlaceholder": "dogdex@example.com",
+    "sendOtpBtn": "Gửi mã OTP →",
+    "sending": "Đang gửi mã...",
+    "otpLabel": "Mã xác thực 6 chữ số",
+    "otpHint": "Vui lòng kiểm tra hộp thư email của bạn để lấy mã OTP.",
+    "newPasswordLabel": "Mật khẩu mới",
+    "newPasswordPlaceholder": "••••••••",
+    "confirmPasswordLabel": "Xác nhận mật khẩu mới",
+    "confirmPasswordPlaceholder": "••••••••",
+    "resetBtn": "Cập nhật mật khẩu mới",
+    "resetting": "Đang cập nhật...",
+    "resendOtp": "Gửi lại mã OTP",
+    "cooldownText": "Gửi lại mã sau {seconds}s",
+    "backToLogin": "Quay lại Đăng nhập",
+    "passwordMismatch": "Mật khẩu không trùng khớp",
+    "otpLengthError": "Vui lòng nhập đủ 6 chữ số của mã OTP"
   }
 }

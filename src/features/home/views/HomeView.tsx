@@ -9,7 +9,7 @@ import { HowItWorks } from "../components/HowItWorks";
  */
 export function HomeView() {
   return (
-    <section className="mx-auto flex max-w-6xl flex-col gap-12 px-6 py-12">
+    <section className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-8 md:gap-12 md:px-6 md:py-12">
       {/* 1. Centerpiece Product Showcase Stage */}
       <ProductStage />
 

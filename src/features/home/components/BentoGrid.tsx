@@ -14,7 +14,7 @@ export function BentoGrid() {
   const t = useTranslations("HomeView");
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
       {/* Module 02: Bring Lost Pups Home */}
       <div className="group relative flex flex-col justify-between overflow-hidden rounded-[32px] border-4 border-[#1A1C1B] bg-[#FCE3D9] p-6 shadow-[6px_6px_0px_#1A1C1B] transition-all duration-300 hover:shadow-[10px_10px_0px_#1A1C1B] min-h-[250px] md:p-8">
         <div className="flex flex-col gap-3">
