@@ -4,6 +4,12 @@ All notable changes to the frontend-dogdex documentation set.
 
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.0] - 2026-07-27
+
+### Changed
+
+- Refactored `SiteNav.tsx` desktop navigation layout to 3-column CSS Grid (`grid-cols-3`) to ensure perfect geometric centering of navigation links when user is logged in.
+
 ## [1.0.0] - 2026-07-24
 
 ### Added

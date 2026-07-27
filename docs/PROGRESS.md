@@ -1,6 +1,6 @@
 # Frontend Builder Progress — Master Dashboard
 
-> **Doc version:** 1.3.0 · **Last updated:** 2026-07-26  
+> **Doc version:** 1.4.0 · **Last updated:** 2026-07-27  
 > Agents: update feature files first, then sync summary counts here.
 
 ## Summary

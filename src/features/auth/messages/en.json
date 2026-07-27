@@ -12,7 +12,16 @@
     "forgotPassword": "Forgot password?",
     "submitBtn": "Log In →",
     "dontHaveAccount": "Don't have an account?",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "showPassword": "SHOW",
+    "hidePassword": "HIDE",
+    "loginSuccessTitle": "LOGIN SUCCESSFUL",
+    "loginSuccessMessage": "Welcome back, Trainer!",
+    "loginFailedTitle": "LOGIN FAILED",
+    "accountUnverifiedTitle": "ACCOUNT UNVERIFIED",
+    "accountUnverifiedMsg": "A new OTP code has been sent to your email. Please enter it below.",
+    "otpDispatchedTitle": "OTP DISPATCHED",
+    "otpDispatchedMsg": "A new OTP code has been sent to your email address."
   },
   "RegisterView": {
     "sidebarTitle": "Join DogDex",
@@ -40,7 +49,11 @@
     "privacyPolicy": "Privacy Policy",
     "submitBtn": "Register Account",
     "alreadyHaveAccount": "Already have an account?",
-    "logInLink": "Log in here"
+    "logInLink": "Log in here",
+    "resendOtp": "Resend OTP Code",
+    "cooldownText": "Resend in {seconds}s",
+    "showPassword": "SHOW",
+    "hidePassword": "HIDE"
   },
   "ForgotPasswordView": {
     "title": "Passcode Recovery",

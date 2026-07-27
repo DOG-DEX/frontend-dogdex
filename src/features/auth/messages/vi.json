@@ -12,7 +12,16 @@
     "forgotPassword": "Quên mật khẩu?",
     "submitBtn": "Đăng nhập →",
     "dontHaveAccount": "Chưa có tài khoản?",
-    "signUp": "Đăng ký"
+    "signUp": "Đăng ký",
+    "showPassword": "HIỆN",
+    "hidePassword": "ẨN",
+    "loginSuccessTitle": "ĐĂNG NHẬP THÀNH CÔNG",
+    "loginSuccessMessage": "Chào mừng bạn đã quay trở lại!",
+    "loginFailedTitle": "ĐĂNG NHẬP THẤT BẠI",
+    "accountUnverifiedTitle": "TÀI KHOẢN CHƯA XÁC THỰC",
+    "accountUnverifiedMsg": "Mã OTP mới đã được gửi tới email của bạn. Vui lòng nhập bên dưới.",
+    "otpDispatchedTitle": "ĐÃ GỬI MÃ OTP",
+    "otpDispatchedMsg": "Mã OTP mới đã được gửi tới địa chỉ email của bạn."
   },
   "RegisterView": {
     "sidebarTitle": "Tham gia DogDex",
@@ -40,7 +49,11 @@
     "privacyPolicy": "Chính sách bảo mật",
     "submitBtn": "Đăng ký tài khoản",
     "alreadyHaveAccount": "Đã có tài khoản?",
-    "logInLink": "Đăng nhập tại đây"
+    "logInLink": "Đăng nhập tại đây",
+    "resendOtp": "Gửi lại mã OTP",
+    "cooldownText": "Gửi lại sau {seconds}s",
+    "showPassword": "HIỆN",
+    "hidePassword": "ẨN"
   },
   "ForgotPasswordView": {
     "title": "Khôi phục mật khẩu",

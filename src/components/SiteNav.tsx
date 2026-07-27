@@ -180,205 +180,212 @@ export function SiteNav() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b-4 border-[#1A1C1B] bg-white px-4 py-3 shadow-brutal-sm md:px-6 md:py-3.5">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between">
-          {/* ── Brand Logo ── */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xl font-black tracking-tight text-[#00A170]"
-          >
-            <Image
-              src="/logos/logo-ic-black.png"
-              alt="DogDex Logo"
-              width={36}
-              height={36}
-              className="h-8 w-auto object-contain md:h-9"
-              priority
-            />
-            <span className="text-lg font-black tracking-tight text-[#1A1C1B] md:text-2xl">
-              DogDex
-            </span>
-          </Link>
-
-          {/* ── Desktop: Morphic Sliding Active Pill Container ── */}
-          <div
-            ref={containerRef}
-            className="relative hidden items-center rounded-full border-2 border-[#1A1C1B] bg-[#F0EDE6] p-1.5 shadow-[2px_2px_0px_#1A1C1B] md:flex"
-          >
-            <span
-              className="pointer-events-none absolute top-1.5 bottom-1.5 rounded-full border-2 border-[#1A1C1B] bg-[#00A170] shadow-[2px_2px_0px_#1A1C1B] transition-all duration-300 ease-out"
-              style={{
-                left: `${pillStyle.left}px`,
-                width: `${pillStyle.width}px`,
-                opacity: pillStyle.opacity,
-              }}
-            />
-
-            <ul className="relative z-10 flex items-center gap-1.5 text-xs font-black uppercase">
-              {NAV_CONFIG.map((item, index) => {
-                const active = isActiveRoute(item.href);
-                return (
-                  <li key={item.href} className="flex items-center justify-center">
-                    <Link
-                      ref={(el) => {
-                        tabsRef.current[index] = el;
-                      }}
-                      href={item.href}
-                      className={`inline-flex items-center justify-center text-center rounded-full px-4 py-1.5 transition-colors duration-200 ${
-                        active
-                          ? "font-black text-white"
-                          : "text-[#1A1C1B] hover:text-[#00A170]"
-                      }`}
-                    >
-                      {t(item.key)}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+        <nav className="mx-auto grid max-w-6xl grid-cols-2 items-center md:grid-cols-3">
+          {/* ── Column 1: Brand Logo (Left) ── */}
+          <div className="flex items-center justify-start">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-xl font-black tracking-tight text-[#00A170]"
+            >
+              <Image
+                src="/logos/logo-ic-black.png"
+                alt="DogDex Logo"
+                width={36}
+                height={36}
+                className="h-8 w-auto object-contain md:h-9"
+                priority
+              />
+              <span className="text-lg font-black tracking-tight text-[#1A1C1B] md:text-2xl">
+                DogDex
+              </span>
+            </Link>
           </div>
 
-          {/* ── Desktop: Right Action Controls ── */}
-          <div className="hidden items-center gap-2.5 md:flex">
-            {currentUser ? (
-              <>
-                {/* QR Scanner Action Button */}
-                <Link
-                  href="/scan"
-                  title="Scan QR"
-                  className="flex items-center gap-1.5 rounded-xl border-2 border-[#1A1C1B] bg-[#85E0C0] px-3 py-1.5 font-mono text-xs font-black text-[#1A1C1B] shadow-[2.5px_2.5px_0px_#1A1C1B] transition-all hover:bg-[#68D4AD] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1A1C1B]"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <path d="M4 8V6a2 2 0 0 1 2-2h2" />
-                    <path d="M16 4h2a2 2 0 0 1 2 2v2" />
-                    <path d="M4 16v2a2 2 0 0 0 2 2h2" />
-                    <path d="M16 20h2a2 2 0 0 0 2-2v-2" />
-                    <rect x="7" y="7" width="3" height="3" fill="currentColor" stroke="none" />
-                    <rect x="14" y="7" width="3" height="3" fill="currentColor" stroke="none" />
-                    <rect x="7" y="14" width="3" height="3" fill="currentColor" stroke="none" />
-                    <path d="M14 14h1.5v1.5H14zM16.5 16.5h1.5v1.5h-1.5zM14 16.5h1.5v1.5H14zM16.5 14h1.5v1.5h-1.5z" fill="currentColor" stroke="none" />
-                  </svg>
-                  <span className="tracking-wider uppercase">
-                    {t("scanQr")}
-                  </span>
-                </Link>
+          {/* ── Column 2: Desktop Morphic Sliding Active Pill Container (Center) ── */}
+          <div className="hidden items-center justify-center md:flex">
+            <div
+              ref={containerRef}
+              className="relative flex items-center rounded-full border-2 border-[#1A1C1B] bg-[#F0EDE6] p-1.5 shadow-[2px_2px_0px_#1A1C1B]"
+            >
+              <span
+                className="pointer-events-none absolute top-1.5 bottom-1.5 rounded-full border-2 border-[#1A1C1B] bg-[#00A170] shadow-[2px_2px_0px_#1A1C1B] transition-all duration-300 ease-out"
+                style={{
+                  left: `${pillStyle.left}px`,
+                  width: `${pillStyle.width}px`,
+                  opacity: pillStyle.opacity,
+                }}
+              />
 
-                {/* User Profile Badge with Retro Dropdown */}
-                <div className="relative" ref={dropdownRef}>
-                  <button
-                    type="button"
-                    onClick={() => setIsDropdownOpen((prev) => !prev)}
-                    className="flex items-center gap-2 rounded-full border-2 border-[#1A1C1B] bg-white py-1 pl-1 pr-3 shadow-[2.5px_2.5px_0px_#1A1C1B] transition-all hover:bg-[#F0EDE6] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1A1C1B]"
+              <ul className="relative z-10 flex items-center gap-1.5 text-xs font-black uppercase">
+                {NAV_CONFIG.map((item, index) => {
+                  const active = isActiveRoute(item.href);
+                  return (
+                    <li key={item.href} className="flex items-center justify-center">
+                      <Link
+                        ref={(el) => {
+                          tabsRef.current[index] = el;
+                        }}
+                        href={item.href}
+                        className={`inline-flex items-center justify-center text-center rounded-full px-4 py-1.5 transition-colors duration-200 ${
+                          active
+                            ? "font-black text-white"
+                            : "text-[#1A1C1B] hover:text-[#00A170]"
+                        }`}
+                      >
+                        {t(item.key)}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+
+          {/* ── Column 3: Right Action Controls & Mobile Hamburger ── */}
+          <div className="flex items-center justify-end gap-2.5">
+            {/* Desktop Action Controls */}
+            <div className="hidden items-center gap-2.5 md:flex">
+              {currentUser ? (
+                <>
+                  {/* QR Scanner Action Button */}
+                  <Link
+                    href="/scan"
+                    title="Scan QR"
+                    className="flex items-center gap-1.5 rounded-xl border-2 border-[#1A1C1B] bg-[#85E0C0] px-3 py-1.5 font-mono text-xs font-black text-[#1A1C1B] shadow-[2.5px_2.5px_0px_#1A1C1B] transition-all hover:bg-[#68D4AD] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1A1C1B]"
                   >
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#1A1C1B] bg-[#A04000] font-mono text-xs font-black text-white shadow-[1px_1px_0px_#1A1C1B]">
-                      {userInitial}
-                    </div>
-                    <span className="max-w-[100px] truncate font-mono text-xs font-black text-[#1A1C1B] lg:max-w-[130px]">
-                      {currentUser.username || "User"}
-                    </span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className={`text-[#1A1C1B] transition-transform duration-200 ${
-                        isDropdownOpen ? "rotate-180" : ""
-                      }`}
+                      className="h-5 w-5"
                     >
-                      <path d="m6 9 6 6 6-6" />
+                      <path d="M4 8V6a2 2 0 0 1 2-2h2" />
+                      <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                      <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                      <path d="M16 20h2a2 2 0 0 0 2-2v-2" />
+                      <rect x="7" y="7" width="3" height="3" fill="currentColor" stroke="none" />
+                      <rect x="14" y="7" width="3" height="3" fill="currentColor" stroke="none" />
+                      <rect x="7" y="14" width="3" height="3" fill="currentColor" stroke="none" />
+                      <path d="M14 14h1.5v1.5H14zM16.5 16.5h1.5v1.5h-1.5zM14 16.5h1.5v1.5H14zM16.5 14h1.5v1.5h-1.5z" fill="currentColor" stroke="none" />
                     </svg>
-                  </button>
+                    <span className="tracking-wider uppercase">
+                      {t("scanQr")}
+                    </span>
+                  </Link>
 
-                  {/* Dropdown Menu */}
-                  {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-56 rounded-2xl border-4 border-[#1A1C1B] bg-white p-2 shadow-[6px_6px_0px_#1A1C1B] z-50 animate-in fade-in zoom-in-95">
-                      {/* Header Summary */}
-                      <div className="border-b-2 border-[#1A1C1B] px-3 py-2">
-                        <p className="font-mono text-xs font-black text-[#1A1C1B] truncate">
-                          {currentUser.username}
-                        </p>
-                        <p className="font-mono text-[10px] font-semibold text-zinc-500 truncate">
-                          {currentUser.email}
-                        </p>
+                  {/* User Profile Badge with Retro Dropdown */}
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen((prev) => !prev)}
+                      className="flex items-center gap-2 rounded-full border-2 border-[#1A1C1B] bg-white py-1 pl-1 pr-3 shadow-[2.5px_2.5px_0px_#1A1C1B] transition-all hover:bg-[#F0EDE6] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1A1C1B]"
+                    >
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#1A1C1B] bg-[#A04000] font-mono text-xs font-black text-white shadow-[1px_1px_0px_#1A1C1B]">
+                        {userInitial}
                       </div>
+                      <span className="max-w-[100px] truncate font-mono text-xs font-black text-[#1A1C1B] lg:max-w-[130px]">
+                        {currentUser.username || "User"}
+                      </span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`text-[#1A1C1B] transition-transform duration-200 ${
+                          isDropdownOpen ? "rotate-180" : ""
+                        }`}
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
 
-                      {/* Menu Items */}
-                      <div className="mt-1 flex flex-col gap-1">
-                        <Link
-                          href="/profile"
-                          onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center gap-2 rounded-xl border-2 border-transparent px-3 py-2 font-mono text-xs font-extrabold text-[#1A1C1B] hover:border-[#1A1C1B] hover:bg-[#85E0C0]/30"
-                        >
-                          <span>{t("myProfile")}</span>
-                        </Link>
+                    {/* Dropdown Menu */}
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-56 rounded-2xl border-4 border-[#1A1C1B] bg-white p-2 shadow-[6px_6px_0px_#1A1C1B] z-50 animate-in fade-in zoom-in-95">
+                        {/* Header Summary */}
+                        <div className="border-b-2 border-[#1A1C1B] px-3 py-2">
+                          <p className="font-mono text-xs font-black text-[#1A1C1B] truncate">
+                            {currentUser.username}
+                          </p>
+                          <p className="font-mono text-[10px] font-semibold text-zinc-500 truncate">
+                            {currentUser.email}
+                          </p>
+                        </div>
 
-                        <Link
-                          href="/dex"
-                          onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center gap-2 rounded-xl border-2 border-transparent px-3 py-2 font-mono text-xs font-extrabold text-[#1A1C1B] hover:border-[#1A1C1B] hover:bg-[#85E0C0]/30"
-                        >
-                          <span>{t("myCollection")}</span>
-                        </Link>
+                        {/* Menu Items */}
+                        <div className="mt-1 flex flex-col gap-1">
+                          <Link
+                            href="/profile"
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="flex items-center gap-2 rounded-xl border-2 border-transparent px-3 py-2 font-mono text-xs font-extrabold text-[#1A1C1B] hover:border-[#1A1C1B] hover:bg-[#85E0C0]/30"
+                          >
+                            <span>{t("myProfile")}</span>
+                          </Link>
 
-                        <button
-                          type="button"
-                          onClick={handleLogout}
-                          className="flex w-full items-center gap-2 rounded-xl border-2 border-[#1A1C1B] bg-[#FF3B30] px-3 py-2 font-mono text-xs font-black text-white shadow-[2px_2px_0px_#1A1C1B] hover:bg-[#E03126] active:translate-x-0.5 active:translate-y-0.5"
-                        >
-                          <span>{t("logout")}</span>
-                        </button>
+                          <Link
+                            href="/dex"
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="flex items-center gap-2 rounded-xl border-2 border-transparent px-3 py-2 font-mono text-xs font-extrabold text-[#1A1C1B] hover:border-[#1A1C1B] hover:bg-[#85E0C0]/30"
+                          >
+                            <span>{t("myCollection")}</span>
+                          </Link>
+
+                          <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="flex w-full items-center gap-2 rounded-xl border-2 border-[#1A1C1B] bg-[#FF3B30] px-3 py-2 font-mono text-xs font-black text-white shadow-[2px_2px_0px_#1A1C1B] hover:bg-[#E03126] active:translate-x-0.5 active:translate-y-0.5"
+                          >
+                            <span>{t("logout")}</span>
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              /* Sign-in Button when logged out */
-              <Link
-                href="/login"
-                className="btn-brutal rounded-full bg-[#00A170] px-4 py-2 text-xs font-extrabold text-white hover:bg-[#008f63]"
-              >
-                {t("login")}
-              </Link>
-            )}
-          </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                /* Sign-in Button when logged out */
+                <Link
+                  href="/login"
+                  className="btn-brutal rounded-full bg-[#00A170] px-4 py-2 text-xs font-extrabold text-white hover:bg-[#008f63]"
+                >
+                  {t("login")}
+                </Link>
+              )}
+            </div>
 
-          {/* ── Mobile: Hamburger Button ── */}
-          <button
-            type="button"
-            onClick={() => setIsDrawerOpen(true)}
-            className="flex items-center justify-center rounded-xl border-2 border-[#1A1C1B] bg-white p-2 shadow-[2px_2px_0px_#1A1C1B] transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1A1C1B] md:hidden"
-            aria-label="Open navigation menu"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#1A1C1B"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            {/* Mobile: Hamburger Button */}
+            <button
+              type="button"
+              onClick={() => setIsDrawerOpen(true)}
+              className="flex items-center justify-center rounded-xl border-2 border-[#1A1C1B] bg-[#F0EDE6] p-2 shadow-[2px_2px_0px_#1A1C1B] transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1A1C1B] md:hidden"
+              aria-label="Open navigation menu"
             >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1A1C1B"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+          </div>
         </nav>
       </header>
 
