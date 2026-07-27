@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, type CSSProperties } from "react";
 
 const DOG_WIDTH = 64;
 const DOG_HEIGHT = 48;
@@ -57,7 +57,9 @@ export function RetroGameScreen() {
   const lastSpawnTimeRef = useRef(0);
   const eatenBoneIdsRef = useRef<Set<number>>(new Set());
 
-  isPlayingRef.current = isPlaying;
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
 
   // Jump Trigger Function
   const triggerJump = useCallback(() => {
@@ -384,10 +386,9 @@ export function RetroGameScreen() {
                 backgroundRepeat: "no-repeat",
                 backgroundSize: `${TOTAL_COLS * 100}% ${TOTAL_ROWS * 100}%`,
                 backgroundPositionY: getSpriteY(getCurrentSpriteRow()),
-                // @ts-ignore
                 "--end-pos": getEndPosition(),
                 animation: `play-sprite ${getAnimDuration()} steps(${getSteps()}) infinite`,
-              }}
+              } as CSSProperties & Record<'--end-pos', string>}
             />
           </div>
         </div>

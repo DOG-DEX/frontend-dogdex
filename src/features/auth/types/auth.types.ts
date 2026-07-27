@@ -37,8 +37,12 @@ export interface ResetPasswordPayload {
   password: string;
 }
 
+export interface RefreshTokenPayload {
+  refreshToken: string;
+}
+
 export interface AuthResponse {
-  message: string;
+  message?: string;
   accessToken?: string;
   refreshToken?: string;
   user?: AuthUser;

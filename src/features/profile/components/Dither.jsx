@@ -79,9 +79,6 @@ float fbm(vec2 p) {
 }
 
 float pattern(vec2 p) {
-  // Move the entire noise field. The previous implementation only animated a
-  // small scalar distortion while leaving the visible field stationary, which
-  // makes the effect appear frozen at slower speeds.
   vec2 flow = vec2(time * waveSpeed, time * waveSpeed * 0.55);
   float distortion = fbm(p - flow);
   return fbm(p - flow + vec2(distortion));
@@ -91,7 +88,9 @@ void main() {
   vec2 uv = gl_FragCoord.xy / resolution.xy;
   uv -= 0.5;
   uv.x *= resolution.x / resolution.y;
+
   float f = pattern(uv);
+
   if (enableMouseInteraction == 1) {
     vec2 mouseNDC = (mousePos / resolution - 0.5) * vec2(1.0, -1.0);
     mouseNDC.x *= resolution.x / resolution.y;
@@ -99,6 +98,7 @@ void main() {
     float effect = 1.0 - smoothstep(0.0, mouseRadius, dist);
     f -= 0.5 * effect;
   }
+
   vec3 col = mix(vec3(0.0), waveColor, f);
   gl_FragColor = vec4(col, 1.0);
 }
@@ -106,6 +106,7 @@ void main() {
 
 const ditherFragmentShader = `
 precision highp float;
+uniform vec2 resolution;
 uniform float colorNum;
 uniform float pixelSize;
 const float bayerMatrix8x8[64] = float[64](
@@ -126,7 +127,7 @@ vec3 dither(vec2 uv, vec3 color) {
   float threshold = bayerMatrix8x8[y * 8 + x] - 0.25;
   float step = 1.0 / (colorNum - 1.0);
   color += threshold * step;
-  float bias = 0.2;
+  float bias = 0.25;
   color = clamp(color - bias, 0.0, 1.0);
   return floor(color * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
 }
@@ -145,9 +146,17 @@ class RetroEffectImpl extends Effect {
     const uniforms = new Map([
       ["colorNum", new THREE.Uniform(4.0)],
       ["pixelSize", new THREE.Uniform(2.0)],
+      ["resolution", new THREE.Uniform(new THREE.Vector2(1, 1))],
     ]);
     super("RetroEffect", ditherFragmentShader, { uniforms });
     this.uniforms = uniforms;
+  }
+
+  setSize(width, height) {
+    const res = this.uniforms.get("resolution");
+    if (res) {
+      res.value.set(width, height);
+    }
   }
 
   set colorNum(v) {
@@ -187,12 +196,13 @@ function DitheredWaves({
   mouseRadius,
 }) {
   const mesh = useRef(null);
+  const materialRef = useRef(null);
   const mouseRef = useRef(new THREE.Vector2());
   const { viewport, size, gl } = useThree();
 
   const waveUniformsRef = useRef({
     time: new THREE.Uniform(0),
-    resolution: new THREE.Uniform(new THREE.Vector2(0, 0)),
+    resolution: new THREE.Uniform(new THREE.Vector2(1, 1)),
     waveSpeed: new THREE.Uniform(waveSpeed),
     waveFrequency: new THREE.Uniform(waveFrequency),
     waveAmplitude: new THREE.Uniform(waveAmplitude),
@@ -210,38 +220,41 @@ function DitheredWaves({
     if (res.x !== w || res.y !== h) {
       res.set(w, h);
     }
+    if (materialRef.current?.uniforms?.resolution) {
+      materialRef.current.uniforms.resolution.value.set(w, h);
+    }
   }, [size, gl]);
 
   const prevColor = useRef([...waveColor]);
   useFrame((_state, delta) => {
-    const u = waveUniformsRef.current;
+    const mat = materialRef.current;
+    const u = mat ? mat.uniforms : waveUniformsRef.current;
 
-    if (!disableAnimation) {
-      // Do not use the renderer's absolute elapsed time here. When the tab is
-      // backgrounded, that value jumps ahead on the next frame, which makes the
-      // high-frequency noise pattern appear to flicker or teleport. Advancing
-      // by a capped frame delta keeps the motion smooth and frame-rate
-      // independent.
+    if (!disableAnimation && u.time) {
       u.time.value += Math.min(delta, 0.05);
     }
 
-    if (u.waveSpeed.value !== waveSpeed) u.waveSpeed.value = waveSpeed;
-    if (u.waveFrequency.value !== waveFrequency) {
+    if (u.waveSpeed && u.waveSpeed.value !== waveSpeed) u.waveSpeed.value = waveSpeed;
+    if (u.waveFrequency && u.waveFrequency.value !== waveFrequency) {
       u.waveFrequency.value = waveFrequency;
     }
-    if (u.waveAmplitude.value !== waveAmplitude) {
+    if (u.waveAmplitude && u.waveAmplitude.value !== waveAmplitude) {
       u.waveAmplitude.value = waveAmplitude;
     }
 
-    if (!prevColor.current.every((v, i) => v === waveColor[i])) {
+    if (u.waveColor && !prevColor.current.every((v, i) => v === waveColor[i])) {
       u.waveColor.value.set(...waveColor);
       prevColor.current = [...waveColor];
     }
 
-    u.enableMouseInteraction.value = enableMouseInteraction ? 1 : 0;
-    u.mouseRadius.value = mouseRadius;
+    if (u.enableMouseInteraction) {
+      u.enableMouseInteraction.value = enableMouseInteraction ? 1 : 0;
+    }
+    if (u.mouseRadius) {
+      u.mouseRadius.value = mouseRadius;
+    }
 
-    if (enableMouseInteraction) {
+    if (enableMouseInteraction && u.mousePos) {
       u.mousePos.value.copy(mouseRef.current);
     }
   });
@@ -256,11 +269,30 @@ function DitheredWaves({
     );
   };
 
+  useEffect(() => {
+    if (!enableMouseInteraction) return;
+
+    const handleWindowPointerMove = (e) => {
+      if (!gl.domElement) return;
+      const rect = gl.domElement.getBoundingClientRect();
+      const dpr = gl.getPixelRatio();
+      const x = (e.clientX - rect.left) * dpr;
+      const y = (e.clientY - rect.top) * dpr;
+      mouseRef.current.set(x, y);
+    };
+
+    window.addEventListener("pointermove", handleWindowPointerMove);
+    return () => {
+      window.removeEventListener("pointermove", handleWindowPointerMove);
+    };
+  }, [enableMouseInteraction, gl]);
+
   return (
     <>
       <mesh ref={mesh} scale={[viewport.width, viewport.height, 1]}>
         <planeGeometry args={[1, 1]} />
         <shaderMaterial
+          ref={materialRef}
           vertexShader={waveVertexShader}
           fragmentShader={waveFragmentShader}
           uniforms={waveUniformsRef.current}

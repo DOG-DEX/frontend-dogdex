@@ -1,8 +1,12 @@
 export type UserProfile = {
   id: string;
   email: string;
-  displayName: string;
-  avatarUrl?: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
+  avatarPath?: string;
+  city?: string;
+  country?: string;
 };
 
 export type AuthSession = {

@@ -92,18 +92,13 @@ export function SiteNav() {
     };
   }, [isDrawerOpen]);
 
-  // Close drawer on route change
-  useEffect(() => {
-    setIsDrawerOpen(false);
-  }, [pathname]);
-
   /**
    * Helper to check if a navigation route is currently active.
    */
-  const isActiveRoute = (targetHref: string) => {
+  const isActiveRoute = useCallback((targetHref: string) => {
     if (targetHref === "/") return pathname === "/";
     return pathname.startsWith(targetHref);
-  };
+  }, [pathname]);
 
   // ── Desktop pill position recalculation ──
   const updatePillPosition = useCallback(() => {
@@ -132,7 +127,7 @@ export function SiteNav() {
         });
       }
     }
-  }, [pathname]);
+  }, [isActiveRoute]);
 
   useEffect(() => {
     updatePillPosition();

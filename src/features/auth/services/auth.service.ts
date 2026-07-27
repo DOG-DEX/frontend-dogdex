@@ -1,258 +1,111 @@
-import { env } from "@/lib/env";
-import {
-  RegisterPayload,
-  LoginPayload,
-  VerifyOtpPayload,
-  ForgotPasswordPayload,
-  ResetPasswordPayload,
+import { apiFetch } from '@/lib/api';
+import type {
   AuthResponse,
   AuthUser,
-} from "../types/auth.types";
+  ForgotPasswordPayload,
+  LoginPayload,
+  RefreshTokenPayload,
+  RegisterPayload,
+  ResetPasswordPayload,
+  VerifyOtpPayload,
+} from '../types/auth.types';
 
-/**
- * Unwraps the backend TransformInterceptor envelope.
- *
- * NestJS TransformInterceptor wraps all successful responses in `{ data: ... }`.
- * Error responses (from exception filters) come as `{ statusCode, message, error }`
- * without the wrapper. This helper normalizes both cases so callers always get
- * the inner payload directly.
- */
-function unwrapResponse<T>(raw: T & { data?: T }): T {
-  if (raw && typeof raw === "object" && "data" in raw && raw.data !== undefined) {
-    return raw.data as T;
-  }
-  return raw;
+const jsonRequest = <T>(body: T): RequestInit => ({
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body),
+});
+
+function persistSession(response: AuthResponse) {
+  if (typeof window === 'undefined') return;
+
+  if (response.accessToken) localStorage.setItem('accessToken', response.accessToken);
+  if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken);
+  if (response.user) localStorage.setItem('user', JSON.stringify(response.user));
+  window.dispatchEvent(new Event('auth-change'));
 }
 
-/**
- * Authentication Service
- * Manages API calls to NestJS Backend Auth Endpoints (/api/auth).
- *
- * All responses are unwrapped from the backend TransformInterceptor
- * envelope `{ data: ... }` before being returned to callers.
- */
+function clearSession() {
+  if (typeof window === 'undefined') return;
+
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+  window.dispatchEvent(new Event('auth-change'));
+}
+
+/** API boundary for every authentication request and browser session mutation. */
 export const authService = {
-  /**
-   * Register a new user account
-   */
-  async register(payload: RegisterPayload): Promise<AuthResponse> {
-    const res = await fetch(`${env.apiBaseUrl}/api/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const raw = await res.json();
-    const data = unwrapResponse(raw);
-
-    if (!res.ok) {
-      const errorMessage = Array.isArray(data.message)
-        ? data.message.join(", ")
-        : data.message || "Registration failed. Please try again.";
-      throw new Error(errorMessage);
-    }
-
-    return data;
+  register(payload: RegisterPayload): Promise<AuthResponse> {
+    return apiFetch<AuthResponse>('/api/auth/register', jsonRequest(payload));
   },
 
-  /**
-   * Login user with email and password
-   */
   async login(payload: LoginPayload): Promise<AuthResponse> {
-    const res = await fetch(`${env.apiBaseUrl}/api/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const raw = await res.json();
-    const data = unwrapResponse(raw);
-
-    if (!res.ok) {
-      const errorMessage = Array.isArray(data.message)
-        ? data.message.join(", ")
-        : data.message || "Invalid email or password.";
-      throw new Error(errorMessage);
-    }
-
-    // Persist session tokens and user metadata upon successful login
-    if (typeof window !== "undefined") {
-      if (data.accessToken) {
-        localStorage.setItem("accessToken", data.accessToken);
-      }
-      if (data.refreshToken) {
-        localStorage.setItem("refreshToken", data.refreshToken);
-      }
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
-      // Notify all components (SiteNav, etc.) that auth state changed
-      window.dispatchEvent(new Event("auth-change"));
-    }
-
-    return data;
+    const response = await apiFetch<AuthResponse>('/api/auth/login', jsonRequest(payload));
+    persistSession(response);
+    return response;
   },
 
-  /**
-   * Verify email address using OTP code sent by backend
-   */
-  async verifyEmail(payload: VerifyOtpPayload): Promise<AuthResponse> {
-    const res = await fetch(`${env.apiBaseUrl}/api/auth/verify-email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const raw = await res.json();
-    const data = unwrapResponse(raw);
-
-    if (!res.ok) {
-      const errorMessage = Array.isArray(data.message)
-        ? data.message.join(", ")
-        : data.message || "Invalid or expired OTP code.";
-      throw new Error(errorMessage);
-    }
-
-    return data;
+  verifyEmail(payload: VerifyOtpPayload): Promise<AuthResponse> {
+    return apiFetch<AuthResponse>('/api/auth/verify-email', jsonRequest(payload));
   },
 
-  /**
-   * Resend verification OTP code to user's email
-   */
-  async resendOtp(email: string): Promise<AuthResponse> {
-    const res = await fetch(
-      `${env.apiBaseUrl}/api/auth/resend-verification-otp`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      }
+  resendOtp(email: string): Promise<AuthResponse> {
+    return apiFetch<AuthResponse>(
+      '/api/auth/resend-verification-otp',
+      jsonRequest({ email }),
     );
-
-    const raw = await res.json();
-    const data = unwrapResponse(raw);
-
-    if (!res.ok) {
-      const errorMessage = Array.isArray(data.message)
-        ? data.message.join(", ")
-        : data.message || "Failed to resend OTP code.";
-      throw new Error(errorMessage);
-    }
-
-    return data;
   },
 
-  /**
-   * Request password reset OTP email
-   */
-  async forgotPassword(payload: ForgotPasswordPayload): Promise<AuthResponse> {
-    const res = await fetch(`${env.apiBaseUrl}/api/auth/forgot-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const raw = await res.json();
-    const data = unwrapResponse(raw);
-
-    if (!res.ok) {
-      const errorMessage = Array.isArray(data.message)
-        ? data.message.join(", ")
-        : data.message || "Failed to request password reset.";
-      throw new Error(errorMessage);
-    }
-
-    return data;
+  forgotPassword(payload: ForgotPasswordPayload): Promise<AuthResponse> {
+    return apiFetch<AuthResponse>('/api/auth/forgot-password', jsonRequest(payload));
   },
 
-  /**
-   * Reset password using OTP code
-   */
-  async resetPassword(payload: ResetPasswordPayload): Promise<AuthResponse> {
-    const res = await fetch(`${env.apiBaseUrl}/api/auth/reset-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const raw = await res.json();
-    const data = unwrapResponse(raw);
-
-    if (!res.ok) {
-      const errorMessage = Array.isArray(data.message)
-        ? data.message.join(", ")
-        : data.message || "Invalid or expired OTP code.";
-      throw new Error(errorMessage);
-    }
-
-    return data;
+  resetPassword(payload: ResetPasswordPayload): Promise<AuthResponse> {
+    return apiFetch<AuthResponse>('/api/auth/reset-password', jsonRequest(payload));
   },
 
-  /**
-   * Clear local session storage
-   */
-  logout() {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
-      window.dispatchEvent(new Event("auth-change"));
-    }
-  },
+  async refreshSession(): Promise<AuthResponse | null> {
+    if (typeof window === 'undefined') return null;
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) return null;
 
-  /**
-   * Get current authenticated user from local storage.
-   * Checks both localStorage and sessionStorage, with a fallback
-   * to token-only detection for edge cases.
-   */
-  getCurrentUser(): AuthUser | null {
-    if (typeof window === "undefined") return null;
     try {
-      const userStr =
-        localStorage.getItem("user") || sessionStorage.getItem("user");
-      if (userStr && userStr !== "undefined") {
-        const userObj = JSON.parse(userStr);
-        if (
-          userObj &&
-          (userObj.username || userObj.email || userObj.id || userObj._id)
-        ) {
-          return {
-            id: userObj.id || userObj._id || "user",
-            username:
-              userObj.username || userObj.email?.split("@")[0] || "Trainer",
-            email: userObj.email || "",
-            role: userObj.role || "user",
-            avatarUrl: userObj.avatarUrl || "",
-          };
-        }
-      }
+      const response = await apiFetch<AuthResponse>(
+        '/api/auth/refresh-token',
+        jsonRequest<RefreshTokenPayload>({ refreshToken }),
+      );
+      persistSession(response);
+      return response;
     } catch {
-      // Fallback below
+      clearSession();
+      return null;
     }
+  },
 
-    // Fallback: if tokens exist but user object is missing
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("refreshToken");
-    if (token) {
+  logout() {
+    clearSession();
+  },
+
+  getCurrentUser(): AuthUser | null {
+    if (typeof window === 'undefined') return null;
+
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (!storedUser) return null;
+      const user = JSON.parse(storedUser) as Partial<AuthUser> & { _id?: string };
+      if (!user.username && !user.email && !user.id && !user._id) return null;
+
       return {
-        id: "session",
-        username: "Trainer",
-        email: "",
+        id: user.id ?? user._id ?? 'session',
+        username: user.username ?? user.email?.split('@')[0] ?? 'Trainer',
+        email: user.email ?? '',
+        role: user.role,
+        avatarUrl: user.avatarUrl,
       };
+    } catch {
+      clearSession();
+      return null;
     }
-    return null;
   },
 };

@@ -1,12 +1,13 @@
 "use client";
 
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { RetroGameScreen } from "../components/RetroGameScreen";
 import { PasswordInput } from "../components/PasswordInput";
 import { authService } from "../services/auth.service";
 import { useToast } from "@/components/ToastContext";
+import { useCountdown } from '../hooks/useCountdown';
 
 /**
  * RegisterView Component
@@ -34,26 +35,11 @@ export function RegisterView() {
 
   // Loading, Cooldown & Alert feedback states
   const [isLoading, setIsLoading] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
-  const [resendCooldown, setResendCooldown] = useState(0);
+  const [cooldown, setCooldown] = useCountdown();
+  const [resendCooldown, setResendCooldown] = useCountdown();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (cooldown <= 0) return;
-    const timer = setInterval(() => {
-      setCooldown((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [cooldown]);
-
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const timer = setInterval(() => {
-      setResendCooldown((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [resendCooldown]);
 
   /**
    * Handle user account registration submission

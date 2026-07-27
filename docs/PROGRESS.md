@@ -1,6 +1,6 @@
 # Frontend Builder Progress — Master Dashboard
 
-> **Doc version:** 1.4.0 · **Last updated:** 2026-07-27  
+> **Doc version:** 1.4.1 · **Last updated:** 2026-07-27  
 > Agents: update feature files first, then sync summary counts here.
 
 ## Summary
@@ -11,8 +11,8 @@
 | [Auth](./features/auth/progress.md) | 2 | 2 | 2 | 0 | yes |
 | [Dogs (Dex)](./features/dogs/progress.md) | 1 | 1 | 0 | 0 | partial |
 | [Scan](./features/scan/progress.md) | 1 | 1 | 0 | 0 | partial |
-| [Profile](./features/profile/progress.md) | 1 | 1 | 0 | 0 | partial |
-| **Total** | **6** | **6** | **3** | **0** | **2 full** |
+| [Profile](./features/profile/progress.md) | 1 | 1 | 1 | 0 | partial |
+| **Total** | **6** | **6** | **4** | **0** | **2 full** |
 
 ## Build phases
 
