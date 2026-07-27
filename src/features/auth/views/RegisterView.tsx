@@ -1,11 +1,13 @@
 "use client";
 
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { RetroGameScreen } from "../components/RetroGameScreen";
+import { PasswordInput } from "../components/PasswordInput";
 import { authService } from "../services/auth.service";
 import { useToast } from "@/components/ToastContext";
+import { useCountdown } from '../hooks/useCountdown';
 
 /**
  * RegisterView Component
@@ -33,17 +35,11 @@ export function RegisterView() {
 
   // Loading, Cooldown & Alert feedback states
   const [isLoading, setIsLoading] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
+  const [cooldown, setCooldown] = useCountdown();
+  const [resendCooldown, setResendCooldown] = useCountdown();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (cooldown <= 0) return;
-    const timer = setInterval(() => {
-      setCooldown((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [cooldown]);
 
   /**
    * Handle user account registration submission
@@ -98,8 +94,23 @@ export function RegisterView() {
 
       setSuccessMessage(response.message || "Account created! OTP sent to your email.");
       setShowOtpModal(true);
+      setResendCooldown(60);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Registration failed. Please try again.";
+
+      // If email is already registered but unverified, auto-switch to OTP modal so user can verify immediately
+      if (msg.toLowerCase().includes("not verified") || msg.toLowerCase().includes("verify your email")) {
+        setSuccessMessage("Account is registered but unverified. A new OTP code has been sent to your email!");
+        setShowOtpModal(true);
+        setResendCooldown(60);
+        toast.info(
+          "UNVERIFIED ACCOUNT",
+          "Your account is registered but not verified. Please enter the OTP sent to your email.",
+          { duration: 5000 }
+        );
+        return;
+      }
+
       setErrorMessage(msg);
       
       toast.error("REGISTRATION FAILED", msg, {
@@ -146,27 +157,34 @@ export function RegisterView() {
   };
 
   /**
-   * Handle resending OTP code
+   * Handle resending OTP code with 60s cooldown
    */
   const handleResendOtp = async () => {
+    if (resendCooldown > 0 || isLoading) return;
+
     setErrorMessage(null);
+    setIsLoading(true);
+
     try {
       await authService.resendOtp(email);
       toast.info("OTP RESENT", "A new OTP code has been sent to your email!");
       setSuccessMessage("New OTP code sent to your email!");
+      setResendCooldown(60);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setErrorMessage(err.message);
         toast.error("RESEND FAILED", err.message);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <section className="w-full max-w-4xl px-2 py-2">
-      <div className="grid w-full min-h-[560px] grid-cols-1 overflow-hidden rounded-3xl border-4 border-[#232B26] bg-white shadow-[10px_10px_0px_#232B26] md:grid-cols-12">
-        {/* Left Panel - Retro Game Boy Console */}
-        <div className="flex flex-col justify-between border-b-4 border-[#232B26] bg-[#A8D8B9] p-5 sm:p-7 md:col-span-5 md:border-b-0 md:border-r-4">
+      <div className="grid w-full min-h-[480px] grid-cols-1 overflow-hidden rounded-2xl border-4 border-[#232B26] bg-white shadow-[6px_6px_0px_#232B26] sm:min-h-[560px] sm:rounded-3xl sm:shadow-[10px_10px_0px_#232B26] md:grid-cols-12">
+        {/* Left Panel - Retro Game Boy Console (hidden on mobile) */}
+        <div className="hidden flex-col justify-between border-b-4 border-[#232B26] bg-[#A8D8B9] p-5 sm:p-7 md:col-span-5 md:flex md:border-b-0 md:border-r-4">
           <RetroGameScreen />
         </div>
 
@@ -236,7 +254,7 @@ export function RegisterView() {
                 />
               </div>
 
-              {/* Password Input with Show/Hide Eye Toggle */}
+              {/* Password Input */}
               <div className="flex flex-col gap-1">
                 <label
                   htmlFor="password"
@@ -244,39 +262,26 @@ export function RegisterView() {
                 >
                   {t("passwordLabel")}
                 </label>
-                <div className="relative flex items-center">
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={t("passwordPlaceholder")}
-                    minLength={6}
-                    required
-                    className="w-full rounded-xl border-2 border-[#232B26] bg-white px-3 py-2 pr-10 text-sm font-medium text-[#232B26] shadow-[2px_2px_0px_#232B26] outline-none transition-all placeholder:font-normal placeholder:text-zinc-400 focus:border-[#00A170] focus:ring-2 focus:ring-[#00A170]"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-2.5 text-zinc-500 hover:text-[#232B26] transition-colors p-1"
-                    aria-label="Toggle password visibility"
-                  >
-                    {showPassword ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                        <line x1="1" y1="1" x2="23" y2="23" />
-                      </svg>
-                    ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
+                {/*
+                  PasswordInput: hidden <input type="password"> (opacity-0) captures keystrokes,
+                  visual div shows paw icons. No browser bullet/autofill leak possible.
+                */}
+                <PasswordInput
+                  id="password"
+                  value={password}
+                  onChange={setPassword}
+                  placeholder={t("passwordPlaceholder")}
+                  required
+                  minLength={6}
+                  autoComplete="new-password"
+                  showPassword={showPassword}
+                  onToggleShow={() => setShowPassword((prev) => !prev)}
+                  showLabel={t("showPassword")}
+                  hideLabel={t("hidePassword")}
+                />
               </div>
 
-              {/* Confirm Password Input with Show/Hide Eye Toggle */}
+              {/* Confirm Password Input */}
               <div className="flex flex-col gap-1">
                 <label
                   htmlFor="confirmPassword"
@@ -284,40 +289,25 @@ export function RegisterView() {
                 >
                   {t("confirmPasswordLabel")}
                 </label>
-                <div className="relative flex items-center">
-                  <input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder={t("confirmPasswordPlaceholder")}
-                    minLength={6}
-                    required
-                    className={`w-full rounded-xl border-2 border-[#232B26] bg-white px-3 py-2 pr-10 text-sm font-medium text-[#232B26] shadow-[2px_2px_0px_#232B26] outline-none transition-all placeholder:font-normal placeholder:text-zinc-400 focus:border-[#00A170] focus:ring-2 focus:ring-[#00A170] ${
-                      confirmPassword && password !== confirmPassword
-                        ? "border-[#FF3B30] focus:border-[#FF3B30] focus:ring-[#FF3B30]"
-                        : ""
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword((prev) => !prev)}
-                    className="absolute right-2.5 text-zinc-500 hover:text-[#232B26] transition-colors p-1"
-                    aria-label="Toggle confirm password visibility"
-                  >
-                    {showConfirmPassword ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                        <line x1="1" y1="1" x2="23" y2="23" />
-                      </svg>
-                    ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
+                <PasswordInput
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={setConfirmPassword}
+                  placeholder={t("confirmPasswordPlaceholder")}
+                  required
+                  minLength={6}
+                  autoComplete="new-password"
+                  showPassword={showConfirmPassword}
+                  onToggleShow={() => setShowConfirmPassword((prev) => !prev)}
+                  showLabel={t("showPassword")}
+                  hideLabel={t("hidePassword")}
+                  // Red border when confirm password doesn't match
+                  extraBorderClass={
+                    confirmPassword && password !== confirmPassword
+                      ? "border-[#FF3B30] focus:border-[#FF3B30] focus:ring-[#FF3B30]"
+                      : ""
+                  }
+                />
                 {/* Instant password mismatch inline feedback */}
                 {confirmPassword && password !== confirmPassword && (
                   <span className="text-[10px] font-extrabold text-[#FF3B30]">
@@ -397,20 +387,23 @@ export function RegisterView() {
                 {isLoading ? "Verifying..." : "Verify OTP & Continue"}
               </button>
 
-              <div className="flex justify-between text-xs font-bold text-zinc-600">
+              <div className="flex items-center justify-between text-xs font-bold text-zinc-600">
                 <button
                   type="button"
                   onClick={() => setShowOtpModal(false)}
-                  className="hover:underline"
+                  className="hover:underline text-[#232B26]"
                 >
                   ← Back to Register
                 </button>
                 <button
                   type="button"
+                  disabled={resendCooldown > 0 || isLoading}
                   onClick={handleResendOtp}
-                  className="text-[#00A170] hover:underline"
+                  className="rounded-lg border-2 border-[#232B26] bg-[#FFCC00] px-3 py-1.5 text-xs font-extrabold uppercase text-[#232B26] shadow-[2px_2px_0px_#232B26] transition-all hover:bg-[#E6B800] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Resend OTP Code
+                  {resendCooldown > 0
+                    ? t("cooldownText", { seconds: resendCooldown })
+                    : t("resendOtp")}
                 </button>
               </div>
             </form>

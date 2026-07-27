@@ -30,9 +30,11 @@ function ToastConsumerContent({ children }: { children: React.ReactNode }) {
     }
   }, [pathname, toast]);
 
-  // Check if current page is Login or Register
+  // Check if current page is an auth page (no SiteNav/Footer)
   const isAuthPage =
-    pathname.includes("/login") || pathname.includes("/register");
+    pathname.includes("/login") ||
+    pathname.includes("/register") ||
+    pathname.includes("/forgot-password");
 
   if (isAuthPage) {
     return <main className="flex-1 bg-[#F0EDE6]">{children}</main>;

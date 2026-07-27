@@ -20,6 +20,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Dog Dex",
   description: "Identify dog breeds and build your personal breed collection.",
+  icons: {
+    icon: "/logos/logo-ic-white.png",
+    shortcut: "/logos/logo-ic-white.png",
+    apple: "/logos/logo-ic-white.png",
+  },
 };
 
 type LocaleLayoutProps = {

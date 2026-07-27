@@ -1,11 +1,14 @@
-import { env } from "@/lib/env";
-import type { ScanResult } from "@/shared/types/scan";
+import { apiFetch } from '@/lib/api';
+import type { PredictionSubmission } from '@/shared/types/scan';
 
 export const scanService = {
-  async scanImage(_file: File): Promise<ScanResult> {
-    const response = await fetch(`${env.apiBaseUrl}/scan`, {
-      method: "POST",
+  async scanImage(file: File): Promise<PredictionSubmission> {
+    const body = new FormData();
+    body.set('file', file);
+    body.set('type', 'image');
+    return apiFetch<PredictionSubmission>('/api/predictions/predict', {
+      method: 'POST',
+      body,
     });
-    return response.json();
   },
 };

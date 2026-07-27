@@ -12,7 +12,16 @@
     "forgotPassword": "Forgot password?",
     "submitBtn": "Log In →",
     "dontHaveAccount": "Don't have an account?",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "showPassword": "SHOW",
+    "hidePassword": "HIDE",
+    "loginSuccessTitle": "LOGIN SUCCESSFUL",
+    "loginSuccessMessage": "Welcome back, Trainer!",
+    "loginFailedTitle": "LOGIN FAILED",
+    "accountUnverifiedTitle": "ACCOUNT UNVERIFIED",
+    "accountUnverifiedMsg": "A new OTP code has been sent to your email. Please enter it below.",
+    "otpDispatchedTitle": "OTP DISPATCHED",
+    "otpDispatchedMsg": "A new OTP code has been sent to your email address."
   },
   "RegisterView": {
     "sidebarTitle": "Join DogDex",
@@ -40,6 +49,33 @@
     "privacyPolicy": "Privacy Policy",
     "submitBtn": "Register Account",
     "alreadyHaveAccount": "Already have an account?",
-    "logInLink": "Log in here"
+    "logInLink": "Log in here",
+    "resendOtp": "Resend OTP Code",
+    "cooldownText": "Resend in {seconds}s",
+    "showPassword": "SHOW",
+    "hidePassword": "HIDE"
+  },
+  "ForgotPasswordView": {
+    "title": "Passcode Recovery",
+    "subtitle": "Transmit verification code to your registered email.",
+    "step1Badge": "STEP 1: REQUEST CODE",
+    "step2Badge": "STEP 2: RESET PASSCODE",
+    "emailLabel": "Registered Email Address",
+    "emailPlaceholder": "dogdex@example.com",
+    "sendOtpBtn": "Transmit OTP Code →",
+    "sending": "Transmitting...",
+    "otpLabel": "6-Digit Security PIN Code",
+    "otpHint": "Check your email inbox for the 6-digit code.",
+    "newPasswordLabel": "New Passcode",
+    "newPasswordPlaceholder": "••••••••",
+    "confirmPasswordLabel": "Confirm New Passcode",
+    "confirmPasswordPlaceholder": "••••••••",
+    "resetBtn": "Overwrite Passcode",
+    "resetting": "Resetting...",
+    "resendOtp": "Resend Code",
+    "cooldownText": "Resend code in {seconds}s",
+    "backToLogin": "Back to Login",
+    "passwordMismatch": "Passwords do not match",
+    "otpLengthError": "Please enter all 6 digits of the OTP code"
   }
 }

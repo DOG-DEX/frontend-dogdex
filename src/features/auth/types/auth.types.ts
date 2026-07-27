@@ -27,8 +27,22 @@ export interface VerifyOtpPayload {
   otp: string;
 }
 
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
+export interface ResetPasswordPayload {
+  email: string;
+  otp: string;
+  password: string;
+}
+
+export interface RefreshTokenPayload {
+  refreshToken: string;
+}
+
 export interface AuthResponse {
-  message: string;
+  message?: string;
   accessToken?: string;
   refreshToken?: string;
   user?: AuthUser;
