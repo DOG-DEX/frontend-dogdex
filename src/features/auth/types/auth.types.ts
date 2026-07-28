@@ -2,13 +2,21 @@
  * Authentication Type Definitions
  */
 
+export type UserRole = 'user' | 'member' | 'de' | 'admin';
+
 export interface AuthUser {
   id: string;
   username: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
+  country?: string;
+  city?: string;
+  phoneNumber?: string;
   isEmailVerified?: boolean;
-  role?: string;
+  role?: UserRole;
   avatarUrl?: string;
+  avatarPath?: string;
 }
 
 export interface RegisterPayload {

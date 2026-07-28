@@ -20,14 +20,21 @@ export default getRequestConfig(async ({ requestLocale }) => {
     }
   };
 
-  const [homeMessages, authMessages, dogsMessages, scanMessages, profileMessages] =
-    await Promise.all([
-      loadModuleMessages("home"),
-      loadModuleMessages("auth"),
-      loadModuleMessages("dogs"),
-      loadModuleMessages("scan"),
-      loadModuleMessages("profile"),
-    ]);
+  const [
+    homeMessages,
+    authMessages,
+    dogsMessages,
+    scanMessages,
+    profileMessages,
+    policiesMessages,
+  ] = await Promise.all([
+    loadModuleMessages("home"),
+    loadModuleMessages("auth"),
+    loadModuleMessages("dogs"),
+    loadModuleMessages("scan"),
+    loadModuleMessages("profile"),
+    loadModuleMessages("policies"),
+  ]);
 
   return {
     locale,
@@ -38,6 +45,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...dogsMessages,
       ...scanMessages,
       ...profileMessages,
+      ...policiesMessages,
     },
   };
 });

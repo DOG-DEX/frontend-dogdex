@@ -5,8 +5,10 @@ export type UserProfile = {
   firstName?: string;
   lastName?: string;
   avatarPath?: string;
+  avatarUrl?: string;
   city?: string;
   country?: string;
+  phoneNumber?: string;
 };
 
 export type AuthSession = {

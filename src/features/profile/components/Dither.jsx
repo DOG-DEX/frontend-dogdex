@@ -7,8 +7,6 @@ import { EffectComposer, wrapEffect } from "@react-three/postprocessing";
 import { Effect } from "postprocessing";
 import * as THREE from "three";
 
-import "./Dither.css";
-
 const waveVertexShader = `
 precision highp float;
 varying vec2 vUv;

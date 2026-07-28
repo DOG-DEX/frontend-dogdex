@@ -56,6 +56,9 @@
     "locationFieldLabel": "Vị trí",
     "favoriteBreedFieldLabel": "Giống cún yêu thích",
     "bioLabel": "Ghi chú huấn luyện viên / Tiểu sử",
-    "saveChangesBtn": "Lưu Thay Đổi"
+    "saveChangesBtn": "Lưu Thay Đổi",
+    "downloadQrBtn": "Tải Thẻ QR",
+    "copyLinkBtn": "Sao Chép Link",
+    "linkCopied": "Đã Sao Chép!"
   }
 }

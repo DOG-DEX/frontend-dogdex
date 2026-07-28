@@ -20,7 +20,6 @@ function persistSession(response: AuthResponse) {
   if (typeof window === 'undefined') return;
 
   if (response.accessToken) localStorage.setItem('accessToken', response.accessToken);
-  if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken);
   if (response.user) localStorage.setItem('user', JSON.stringify(response.user));
   window.dispatchEvent(new Event('auth-change'));
 }
@@ -29,7 +28,6 @@ function clearSession() {
   if (typeof window === 'undefined') return;
 
   localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
   localStorage.removeItem('user');
   window.dispatchEvent(new Event('auth-change'));
 }
@@ -67,13 +65,11 @@ export const authService = {
 
   async refreshSession(): Promise<AuthResponse | null> {
     if (typeof window === 'undefined') return null;
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) return null;
 
     try {
       const response = await apiFetch<AuthResponse>(
         '/api/auth/refresh-token',
-        jsonRequest<RefreshTokenPayload>({ refreshToken }),
+        jsonRequest({}),
       );
       persistSession(response);
       return response;
@@ -83,8 +79,14 @@ export const authService = {
     }
   },
 
-  logout() {
-    clearSession();
+  async logout() {
+    try {
+      await apiFetch('/api/auth/logout', jsonRequest({}));
+    } catch {
+      // Ignore network failures on logout
+    } finally {
+      clearSession();
+    }
   },
 
   getCurrentUser(): AuthUser | null {

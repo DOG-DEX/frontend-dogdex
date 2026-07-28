@@ -1,0 +1,65 @@
+{
+  "Policies": {
+    "tag": "DogDex Store Policies",
+    "title": "Policies & Terms Center",
+    "subtitle": "100% Transparency for all dog collar purchases and pet care services. Click below to view details.",
+    "print": "Print Page",
+    "searchPlaceholder": "Search keywords (e.g., return, COD, GHTK, 7 days)...",
+    "tabPrivacy": "Privacy Policy",
+    "tabTerms": "Terms of Use",
+    "tabRefund": "Return & Refund",
+    "tabShipping": "Shipping Policy",
+    "directLinks": "Standalone Policy Pages:",
+
+    "p11Title": "1.1 Customer Personal Data Collection",
+    "p11Badge": "PRIVACY",
+    "p11Content": "The Pet Care Dog Dex system only collects necessary personal data including: Full Name, Phone Number, Email, and Delivery Address. This data is used when you register, purchase dog collars, or book pet care services.",
+
+    "p12Title": "1.2 Purpose of Data Use & Marketing Unsubscribe",
+    "p12Badge": "MARKETING",
+    "p12Intro": "Collected personal data is used for key purposes including:",
+    "p12Bullet1": "Order confirmation, packaging, and collar delivery.",
+    "p12Bullet2": "Customer support and technical assistance.",
+    "p12Bullet3": "Sending promotional offers via Email or SMS Marketing.",
+    "p12Unsub": "Unsubscribe right: You can click the \"Unsubscribe\" link at the bottom of any Marketing Email at any time.",
+
+    "p13Title": "1.3 Third-Party Non-Disclosure Commitment",
+    "p13Badge": "COMMITMENT",
+    "p13Content": "Dog Dex strictly commits to NOT SELL, RENT, OR EXCHANGE customer personal data. Shipping details are solely shared with official courier partners (such as GHTK, GHN, Viettel Post) to fulfill delivery.",
+
+    "t21Title": "2.1 Commitment to Accurate Data Declaration",
+    "t21Badge": "TERMS",
+    "t21Content": "Customers commit to providing 100% accurate Name, Phone Number, and Shipping Address. Customers hold legal responsibility for declared information. We reserve the right to refuse service for fraudulent data.",
+
+    "t22Title": "2.2 Currency Pricing & Payment Methods",
+    "t22Badge": "PAYMENT",
+    "t22Intro": "All dog collar products and services are listed in VND.",
+    "t22CodTitle": "Cash On Delivery (COD)",
+    "t22CodDesc": "Pay cash directly to the courier upon receiving and inspecting goods.",
+    "t22BankTitle": "Bank Transfer",
+    "t22BankDesc": "Fast transfer via official bank accounts or instant QR scanning.",
+
+    "r31Title": "3.1 7-Day Return Period & Accepted Conditions",
+    "r31Badge": "RETURNS",
+    "r31Intro": "7 business days return policy applies from delivery date for the following cases:",
+    "r31Bullet1": "Incorrect size, color, or wrong item delivered.",
+    "r31Bullet2": "Manufacturing defects (broken buckle, loose stitching).",
+
+    "r32Title": "3.2 Product Condition Requirements for Returns",
+    "r32Badge": "REQUIREMENTS",
+    "r32Bullet1": "Items must have original tags and seals intact.",
+    "r32Bullet2": "Unused, unwashed, and free of dirt or pet hair.",
+    "r32Bullet3": "Strictly free of scratches, chew marks, or pet damage.",
+
+    "s41Title": "4.1 Order Processing Time",
+    "s41Badge": "PROCESSING",
+    "s41Content": "Confirmed orders will be processed and packed within 1 to 2 business days (excluding Sundays and Public Holidays).",
+
+    "s42Title": "4.2 Domestic Delivery Times",
+    "s42Badge": "SHIPPING",
+    "s42Urban": "METRO (HCMC / HANOI)",
+    "s42UrbanTime": "1 - 2 business days",
+    "s42Province": "OTHER PROVINCES",
+    "s42ProvinceTime": "2 - 5 business days"
+  }
+}
