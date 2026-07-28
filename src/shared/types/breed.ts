@@ -4,6 +4,10 @@ export type Breed = {
   slug: string;
   description?: string;
   imageUrl?: string;
+  pokedexNumber?: number;
+  origin?: string;
+  group?: string;
+  rarityLevel?: number;
 };
 
 export type BreedCollectionEntry = {
@@ -11,3 +15,4 @@ export type BreedCollectionEntry = {
   discoveredAt: string;
   scanCount: number;
 };
+

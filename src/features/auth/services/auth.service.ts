@@ -104,6 +104,7 @@ export const authService = {
         email: user.email ?? '',
         role: user.role,
         avatarUrl: user.avatarUrl,
+        avatarPath: user.avatarPath,
       };
     } catch {
       clearSession();

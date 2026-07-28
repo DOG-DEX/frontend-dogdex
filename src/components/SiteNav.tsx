@@ -7,13 +7,13 @@ import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { authService } from "@/features/auth/services/auth.service";
 import { AuthUser } from "@/features/auth/types/auth.types";
 import { useToast } from "@/components/ToastContext";
+import { getCloudinaryUrl } from "@/lib/media";
 
 // Static navigation configuration outside component scope to prevent reference churn
 const NAV_CONFIG = [
   { href: "/", key: "home" },
-  { href: "/dex", key: "dex" },
+  { href: "/products", key: "products" },
   { href: "/scan", key: "scan" },
-  { href: "/profile", key: "profile" },
 ] as const;
 
 /**
@@ -37,6 +37,7 @@ export function SiteNav() {
 
   // ── Auth State ──
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const [avatarError, setAvatarError] = useState(false);
 
   // ── Desktop: Profile dropdown ──
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -172,6 +173,10 @@ export function SiteNav() {
     .charAt(0)
     .toUpperCase();
 
+  const userAvatarUrl = getCloudinaryUrl(
+    currentUser?.avatarPath || currentUser?.avatarUrl
+  );
+
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b-4 border-[#1A1C1B] bg-white px-4 py-3 shadow-brutal-sm md:px-6 md:py-3.5">
@@ -279,8 +284,18 @@ export function SiteNav() {
                       onClick={() => setIsDropdownOpen((prev) => !prev)}
                       className="flex items-center gap-2 rounded-full border-2 border-[#1A1C1B] bg-white py-1 pl-1 pr-3 shadow-[2.5px_2.5px_0px_#1A1C1B] transition-all hover:bg-[#F0EDE6] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1A1C1B]"
                     >
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#1A1C1B] bg-[#A04000] font-mono text-xs font-black text-white shadow-[1px_1px_0px_#1A1C1B]">
-                        {userInitial}
+                      <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border-2 border-[#1A1C1B] bg-[#A04000] font-mono text-xs font-black text-white shadow-[1px_1px_0px_#1A1C1B]">
+                        {userAvatarUrl && !avatarError ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={userAvatarUrl}
+                            alt={currentUser.username || "User"}
+                            className="h-full w-full object-cover"
+                            onError={() => setAvatarError(true)}
+                          />
+                        ) : (
+                          userInitial
+                        )}
                       </div>
                       <span className="max-w-[100px] truncate font-mono text-xs font-black text-[#1A1C1B] lg:max-w-[130px]">
                         {currentUser.username || "User"}
@@ -449,8 +464,18 @@ export function SiteNav() {
         {currentUser && (
           <div className="border-b-4 border-[#1A1C1B] bg-white px-5 py-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#1A1C1B] bg-[#A04000] font-mono text-base font-black text-white shadow-[2px_2px_0px_#1A1C1B]">
-                {userInitial}
+              <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-[#1A1C1B] bg-[#A04000] font-mono text-base font-black text-white shadow-[2px_2px_0px_#1A1C1B]">
+                {userAvatarUrl && !avatarError ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={userAvatarUrl}
+                    alt={currentUser.username || "Trainer"}
+                    className="h-full w-full object-cover"
+                    onError={() => setAvatarError(true)}
+                  />
+                ) : (
+                  userInitial
+                )}
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-mono text-sm font-black text-[#1A1C1B]">
@@ -583,6 +608,15 @@ function DrawerNavIcon({ routeKey }: { routeKey: string }) {
       return (
         <svg {...iconProps}>
           <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 1-1 1h-3m-4 0a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-2z" />
+        </svg>
+      );
+    case "products":
+      return (
+        <svg {...iconProps}>
+          <path d="m7.5 4.27 9 5.15" />
+          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+          <path d="m3.3 7 8.7 5 8.7-5" />
+          <path d="M12 12v9" />
         </svg>
       );
     case "dex":

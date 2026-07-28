@@ -1,0 +1,5 @@
+import { ProductsView } from '@/features/products/views/ProductsView';
+
+export default function ProductsPage() {
+  return <ProductsView />;
+}

@@ -1,13 +1,14 @@
 {
   "SiteNav": {
     "home": "Trang chủ",
+    "products": "Sản phẩm",
     "dex": "Bộ sưu tập",
     "scan": "Quét",
     "profile": "Hồ sơ",
     "login": "Đăng nhập",
     "scanQr": "Quét QR",
     "myProfile": "Hồ sơ của tôi",
-    "myCollection": "Đàn cún của tôi",
+    "myCollection": "Bộ sưu tập",
     "logout": "Đăng xuất",
     "quickScan": "Quét",
     "notif": "Thông báo",
