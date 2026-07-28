@@ -78,6 +78,15 @@ export function ProfileView() {
         const fetched = await profileService.getProfile();
         if (isMounted && fetched) {
           setProfileData(fetched);
+          try {
+            const stored = localStorage.getItem('user');
+            const currentUser = stored ? JSON.parse(stored) : {};
+            const mergedUser = { ...currentUser, ...fetched };
+            localStorage.setItem('user', JSON.stringify(mergedUser));
+            window.dispatchEvent(new Event('auth-change'));
+          } catch {
+            // Ignore parse errors
+          }
         }
       } catch {
         // Fall back to authUser

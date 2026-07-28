@@ -1,13 +1,14 @@
 {
   "SiteNav": {
     "home": "Home",
+    "products": "Products",
     "dex": "Collection",
     "scan": "Scan",
     "profile": "Profile",
     "login": "Sign in",
     "scanQr": "Scan QR",
     "myProfile": "My Profile",
-    "myCollection": "My Pack",
+    "myCollection": "Collection",
     "logout": "Log Out",
     "quickScan": "Scan",
     "notif": "Notif",

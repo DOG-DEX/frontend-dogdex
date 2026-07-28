@@ -1,5 +1,6 @@
 import { apiFetch } from '@/lib/api';
 import { env } from '@/lib/env';
+import { getCloudinaryUrl } from '@/lib/media';
 import type { Breed } from '@/shared/types/breed';
 
 type BreedListItem = {
@@ -8,18 +9,14 @@ type BreedListItem = {
   slug: string;
   description?: string;
   mediaPath?: string;
+  pokedexNumber?: number;
+  origin?: string;
+  group?: string;
+  rarity_level?: number;
 };
 
 export function mediaUrl(mediaPath?: string) {
-  if (!mediaPath) return undefined;
-  if (/^(https?:\/\/|data:|blob:)/i.test(mediaPath)) return mediaPath;
-
-  const normalizedPath = mediaPath.startsWith('/')
-    ? mediaPath
-    : mediaPath.startsWith('uploads/')
-      ? `/public/${mediaPath}`
-      : `/public/uploads/${mediaPath}`;
-  return `${env.apiBaseUrl}${normalizedPath}`;
+  return getCloudinaryUrl(mediaPath);
 }
 
 export type CreateDogPayload = {
@@ -61,9 +58,13 @@ type PredictionResult = {
 };
 
 export const dogsService = {
-  async listBreeds(): Promise<Breed[]> {
-    const result = await apiFetch<{ data: BreedListItem[] }>(
-      '/api/wiki/dogs',
+  async listBreeds(limit = 150): Promise<Breed[]> {
+    // Backend response structure (double-wrapped):
+    //   raw:     { data: { data: [...], pagination: {...} } }
+    //   after apiFetch unwrap(): { data: BreedListItem[], pagination: {...} }
+    // Pass limit parameter to fetch full dataset (e.g. 120 breeds) instead of default page limit of 20
+    const result = await apiFetch<{ data: BreedListItem[]; pagination: unknown }>(
+      `/api/wiki/dogs?limit=${limit}`,
     );
     return result.data.map((breed) => ({
       id: breed._id,
@@ -71,6 +72,10 @@ export const dogsService = {
       slug: breed.slug,
       description: breed.description,
       imageUrl: mediaUrl(breed.mediaPath),
+      pokedexNumber: breed.pokedexNumber,
+      origin: breed.origin,
+      group: breed.group,
+      rarityLevel: breed.rarity_level,
     }));
   },
 
