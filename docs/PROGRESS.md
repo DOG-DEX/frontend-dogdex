@@ -1,6 +1,6 @@
 # Frontend Builder Progress — Master Dashboard
 
-> **Doc version:** 1.4.1 · **Last updated:** 2026-07-27  
+> **Doc version:** 1.6.0 · **Last updated:** 2026-07-28  
 > Agents: update feature files first, then sync summary counts here.
 
 ## Summary
@@ -11,8 +11,8 @@
 | [Auth](./features/auth/progress.md) | 2 | 2 | 2 | 0 | yes |
 | [Dogs (Dex)](./features/dogs/progress.md) | 1 | 1 | 0 | 0 | partial |
 | [Scan](./features/scan/progress.md) | 1 | 1 | 0 | 0 | partial |
-| [Profile](./features/profile/progress.md) | 1 | 1 | 1 | 0 | partial |
-| **Total** | **6** | **6** | **4** | **0** | **2 full** |
+| [Profile](./features/profile/progress.md) | 1 | 1 | 1 | 0 | yes |
+| **Total** | **6** | **6** | **5** | **0** | **3 full** |
 
 ## Build phases
 
@@ -20,8 +20,8 @@
 |-------|-------|--------|
 | P0 — Scaffold | Folder structure, routing, i18n, docs hub | done |
 | P1 — Core UX | Home, SiteNav Morphic Redesign, Scan upload, Dex grid | in_progress |
-| P2 — Auth | Login, register, OTP verification, session storage | done |
-| P3 — Profile | User stats, collection history | planned |
+| P2 — Auth | Login, register, OTP verification, HttpOnly cookie refresh token & auto-refresh | done |
+| P3 — Profile | Profile redesign, expandable edit panel, country/city selection, avatar management & validation | done |
 | P4 — Quality | Tests, accessibility, performance | planned |
 
 ## Blockers & TODOs

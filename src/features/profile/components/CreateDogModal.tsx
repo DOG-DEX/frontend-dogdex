@@ -3,6 +3,8 @@
 import { useState, FormEvent, ChangeEvent } from "react";
 import { useTranslations } from "next-intl";
 import { dogsService, type CreateDogPayload } from "@/features/dogs/services/dogs.service";
+import { CustomSelect } from "@/shared/ui/CustomSelect";
+import { useToast } from "@/components/ToastContext";
 
 type CreateDogModalProps = {
   isOpen: boolean;
@@ -10,66 +12,13 @@ type CreateDogModalProps = {
   onDogCreated: (createdDog: any) => void;
 };
 
-function CustomSelect<T extends string>({
-  value,
-  onChange,
-  options,
-}: {
-  value: T;
-  onChange: (val: T) => void;
-  options: Array<{ value: T; label: string }>;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const selectedLabel = options.find((o) => o.value === value)?.label || value;
-
-  return (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="mt-1 flex h-12 w-full items-center justify-between rounded-2xl border-4 border-[#232B26] bg-[#F0EDE6] px-4 font-mono text-sm font-bold text-[#232B26] shadow-[2px_2px_0px_#232B26] transition hover:bg-white focus:bg-white active:translate-x-0.5 active:translate-y-0.5"
-      >
-        <span>{selectedLabel}</span>
-        <span className="font-mono text-xs font-black text-[#00A170]">v</span>
-      </button>
-
-      {isOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-48 overflow-y-auto rounded-2xl border-4 border-[#232B26] bg-white p-2 shadow-[6px_6px_0px_#232B26] custom-scrollbar">
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  onChange(opt.value);
-                  setIsOpen(false);
-                }}
-                className={`flex w-full items-center rounded-xl px-3 py-2.5 font-mono text-xs font-bold transition text-left ${
-                  opt.value === value
-                    ? "bg-[#00A170] text-white"
-                    : "text-[#232B26] hover:bg-[#FFD6A5]"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
 export function CreateDogModal({
   isOpen,
   onClose,
   onDogCreated,
 }: CreateDogModalProps) {
   const t = useTranslations("ProfileView");
+  const { toast } = useToast();
 
   const [formState, setFormState] = useState({
     name: "",
@@ -95,8 +44,15 @@ export function CreateDogModal({
     if (!file) return;
 
     setSelectedPhoto(file);
-    const objectUrl = URL.createObjectURL(file);
-    setPhotoPreview(objectUrl);
+
+    // Convert file to permanent base64 data URL
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (reader.result) {
+        setPhotoPreview(reader.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
 
     // Trigger AI Breed Detection
     setIsAnalyzingAi(true);
@@ -105,9 +61,10 @@ export function CreateDogModal({
       if (detected) {
         setAiDetectedBreed(detected);
         setFormState((prev) => ({ ...prev, breed: detected }));
+        toast.info("AI DETECTED BREED", `Identified as ${detected}`);
       }
-    } catch {
-      // AI prediction fallback silently
+    } catch (err: any) {
+      toast.error("AI ANALYSIS FAILED", err.message || "Could not identify breed automatically.");
     } finally {
       setIsAnalyzingAi(false);
     }
@@ -117,13 +74,28 @@ export function CreateDogModal({
     e.preventDefault();
     setIsSubmitting(true);
 
+    let uploadedAvatarPath: string | undefined = undefined;
+
+    if (selectedPhoto) {
+      try {
+        uploadedAvatarPath = await dogsService.uploadImage(selectedPhoto);
+      } catch (uploadErr: any) {
+        toast.error(
+          "IMAGE UPLOAD FAILED",
+          uploadErr.message || "Could not upload pet image to server."
+        );
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     const payload: CreateDogPayload = {
       name: formState.name,
       breed: formState.breed || "Mixed Breed",
       gender: formState.gender,
       birthday: formState.birthday ? formState.birthday : undefined,
       sterilized: formState.sterilized,
-      avatarPath: photoPreview || undefined,
+      avatarPath: uploadedAvatarPath || undefined,
       attributes: {
         color: formState.color || undefined,
         pattern: formState.pattern || undefined,
@@ -134,8 +106,16 @@ export function CreateDogModal({
     try {
       // Attempt backend API creation
       const created = await dogsService.createDog(payload);
+      toast.success(
+        "DOG CREATED",
+        `Successfully created dog profile for "${created.name || formState.name}"!`
+      );
       onDogCreated(created);
-    } catch {
+    } catch (err: any) {
+      toast.error(
+        "CREATE FAILED",
+        err.message || "Failed to create dog profile. Check connection or authentication."
+      );
       // Fallback local pet object for guest/offline mode
       const fallbackDog = {
         id: `dog-${Date.now()}`,

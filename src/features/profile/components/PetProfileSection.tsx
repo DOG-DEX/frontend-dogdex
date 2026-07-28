@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { QRCodeSVG } from "qrcode.react";
 import { dogsService } from "@/features/dogs/services/dogs.service";
 import { CreateDogModal } from "./CreateDogModal";
+import { EditDogModal } from "./EditDogModal";
+import { useToast } from "@/components/ToastContext";
 
 export type PetProfile = {
   id: string;
@@ -14,104 +17,141 @@ export type PetProfile = {
   tagId: string;
   color: string;
   notes: string;
+  avatarUrl?: string;
 };
 
-const DEFAULT_PETS: PetProfile[] = [
-  {
-    id: "pet-1",
-    name: "Kuro",
-    breed: "Shiba Inu",
-    age: "2 yrs",
-    gender: "Male",
-    tagId: "DD-SHIBA-8821",
-    color: "Black & Tan",
-    notes: "Friendly, loves morning walks at Central Park. Microchipped.",
-  },
-  {
-    id: "pet-2",
-    name: "Mochi",
-    breed: "Golden Retriever",
-    age: "1 yr",
-    gender: "Female",
-    tagId: "DD-GOLD-4410",
-    color: "Cream Golden",
-    notes: "Playful, trained for basic commands. Smart collar attached.",
-  },
-];
-
-const STORAGE_KEY = "dogdex_pet_profiles_v1";
+function getPetPhoto(pet: PetProfile): string {
+  if (pet.avatarUrl && pet.avatarUrl.trim() !== "" && !pet.avatarUrl.startsWith("blob:")) {
+    return pet.avatarUrl;
+  }
+  const breedLower = (pet.breed || "").toLowerCase();
+  if (breedLower.includes("chihuahua") || breedLower.includes("chi")) {
+    return "/uploads/my-chihuahua.png";
+  }
+  if (breedLower.includes("shiba")) {
+    return "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=800&q=80";
+  }
+  if (breedLower.includes("golden") || breedLower.includes("retriever")) {
+    return "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=800&q=80";
+  }
+  if (breedLower.includes("corgi")) {
+    return "https://images.unsplash.com/photo-1612536057832-2ff7ead58194?auto=format&fit=crop&w=800&q=80";
+  }
+  if (breedLower.includes("poodle")) {
+    return "https://images.unsplash.com/photo-1591769225440-811ad7d6eca0?auto=format&fit=crop&w=800&q=80";
+  }
+  return "/uploads/my-chihuahua.png";
+}
 
 export function PetProfileSection() {
   const t = useTranslations("ProfileView");
+  const { toast } = useToast();
 
-  const [pets, setPets] = useState<PetProfile[]>(() => {
-    if (typeof window === "undefined") return DEFAULT_PETS;
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : DEFAULT_PETS;
-    } catch {
-      return DEFAULT_PETS;
-    }
-  });
-
+  const [pets, setPets] = useState<PetProfile[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingPet, setEditingPet] = useState<PetProfile | null>(null);
   const [activeQrPet, setActiveQrPet] = useState<PetProfile | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
+  const qrSvgRef = useRef<SVGSVGElement | null>(null);
 
-  // Fetch backend dogs on mount
-  useEffect(() => {
-    async function loadBackendDogs() {
-      try {
-        const backendDogs = await dogsService.listMyDogs();
-        if (backendDogs && backendDogs.length > 0) {
-          const mapped: PetProfile[] = backendDogs.map((d) => ({
+  // Load real dogs from NestJS Backend API
+  const loadBackendDogs = async () => {
+    setIsLoading(true);
+    try {
+      const backendDogs = await dogsService.listMyDogs();
+      if (backendDogs && Array.isArray(backendDogs)) {
+        const mapped: PetProfile[] = backendDogs.map((d) => {
+          const breedShort = (d.breed || "DOG").substring(0, 4).toUpperCase();
+          const idShort = (d.id || "0000").substring(0, 4).toUpperCase();
+          return {
             id: d.id,
             name: d.name,
-            breed: d.breed,
+            breed: d.breed || "Mixed Breed",
             age: d.birthday ? `${new Date(d.birthday).getFullYear()}` : "1 yr",
             gender: d.gender === "female" ? "Female" : "Male",
-            tagId: `DD-${d.breed.substring(0, 4).toUpperCase()}-${d.id.substring(
-              0,
-              4
-            )}`,
+            tagId: `DD-${breedShort}-${idShort}`,
             color: d.attributes?.color || "Standard",
             notes: `${d.attributes?.pattern ? `Pattern: ${d.attributes.pattern}. ` : ""}${
               d.sterilized ? "Sterilized/Fixed." : ""
             }`,
-          }));
-          setPets(mapped);
-        }
-      } catch {
-        // Fallback to local state
+            avatarUrl: dogsService.mediaUrl(d.avatarPath) || getPetPhoto({ breed: d.breed } as any),
+          };
+        });
+        setPets(mapped);
+      } else {
+        setPets([]);
       }
+    } catch (err: any) {
+      toast.error("FETCH ERROR", err.message || "Failed to fetch pet profiles from backend server.");
+      setPets([]);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
     loadBackendDogs();
   }, []);
 
-  useEffect(() => {
+  const handleDelete = async (id: string, name: string) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(pets));
-    } catch {
-      // Ignore storage errors
+      await dogsService.deleteDog(id);
+      toast.success("DOG DELETED", `Profile for "${name}" has been deleted.`);
+    } catch (err: any) {
+      toast.error("DELETE FAILED", err.message || "Could not delete dog profile.");
     }
-  }, [pets]);
-
-  const handleDelete = (id: string) => {
     setPets((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const handleDogCreated = (createdDog: any) => {
-    const formattedPet: PetProfile = {
-      id: createdDog.id || `pet-${Date.now()}`,
-      name: createdDog.name,
-      breed: createdDog.breed,
-      age: createdDog.birthday ? `${createdDog.birthday}` : "1 yr",
-      gender: createdDog.gender === "female" ? "Female" : "Male",
-      tagId: createdDog.tagId || `DD-TAG-${Math.floor(1000 + Math.random() * 9000)}`,
-      color: createdDog.attributes?.color || createdDog.color || "Standard",
-      notes: createdDog.notes || (createdDog.sterilized ? "Sterilized/Fixed." : ""),
-    };
+  const handleDogCreated = (_createdDog: any) => {
+    loadBackendDogs();
+  };
 
-    setPets((prev) => [formattedPet, ...prev]);
+  const getPublicQrUrl = (pet: PetProfile) => {
+    if (typeof window !== "undefined") {
+      return `${window.location.origin}/scan?tagId=${pet.tagId}&petId=${pet.id}`;
+    }
+    return `https://dogdex.app/scan?tagId=${pet.tagId}&petId=${pet.id}`;
+  };
+
+  const handleCopyLink = (pet: PetProfile) => {
+    const url = getPublicQrUrl(pet);
+    navigator.clipboard.writeText(url);
+    setIsCopied(true);
+    toast.info("LINK COPIED", `Public QR profile link for ${pet.name} copied to clipboard!`);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const handleDownloadQr = () => {
+    if (!qrSvgRef.current || !activeQrPet) return;
+    const svgData = new XMLSerializer().serializeToString(qrSvgRef.current);
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const URL = window.URL || window.webkitURL || window;
+    const blobURL = URL.createObjectURL(svgBlob);
+
+    const image = new Image();
+    image.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 400;
+      canvas.height = 400;
+      const context = canvas.getContext("2d");
+      if (context) {
+        context.fillStyle = "#FFFFFF";
+        context.fillRect(0, 0, 400, 400);
+        context.drawImage(image, 20, 20, 360, 360);
+
+        const png = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.href = png;
+        downloadLink.download = `${activeQrPet.name}-QR-Tag.png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        toast.success("QR TAG DOWNLOADED", `Saved QR tag image for "${activeQrPet.name}"!`);
+      }
+    };
+    image.src = blobURL;
   };
 
   return (
@@ -139,87 +179,87 @@ export function PetProfileSection() {
         </button>
       </div>
 
-      {/* Pet Profiles Grid */}
-      {pets.length === 0 ? (
+      {/* Loading state */}
+      {isLoading ? (
+        <div className="mt-8 rounded-2xl border-4 border-dashed border-[#232B26] bg-[#F0EDE6] p-8 text-center">
+          <p className="font-mono text-sm font-black text-[#232B26]">
+            Loading pet profiles...
+          </p>
+        </div>
+      ) : pets.length === 0 ? (
+        /* Empty real data state */
         <div className="mt-8 rounded-2xl border-4 border-dashed border-[#232B26] bg-[#F0EDE6] p-8 text-center">
           <p className="font-mono text-sm font-black text-[#232B26]">
             {t("emptyPets")}
           </p>
         </div>
       ) : (
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
-          {pets.map((pet) => (
-            <article
-              key={pet.id}
-              className="relative flex flex-col justify-between rounded-[1.5rem] border-4 border-[#232B26] bg-[#F0EDE6] p-5 shadow-[6px_6px_0px_#232B26] transition hover:bg-white"
-            >
-              <div>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="grid h-14 w-14 place-items-center rounded-2xl border-2 border-[#232B26] bg-[#FFD6A5] font-mono text-xl font-black text-[#232B26] shadow-[3px_3px_0px_#232B26]">
-                      {pet.name.charAt(0).toUpperCase()}
-                    </div>
+        /* Real API Pets Collection Grid */
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
+          {pets.map((pet) => {
+            const photoUrl = getPetPhoto(pet);
+            return (
+              <div key={pet.id} className="flex flex-col gap-3">
+                {/* Standalone Image Card */}
+                <div className="relative h-64 md:h-72 w-full overflow-hidden rounded-[2rem] border-2 border-[#232B26]/15 bg-[#F0EDE6] shadow-sm transition-all duration-300 hover:shadow-md">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={photoUrl}
+                    alt={pet.name}
+                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  />
+
+                  {/* Subtle Top Gender Tag */}
+                  <div className="absolute top-4 right-4">
+                    <span className="rounded-full border border-[#232B26]/20 bg-white/95 px-3 py-1 font-mono text-[11px] font-black uppercase text-[#232B26] shadow-sm backdrop-blur-md">
+                      {pet.gender === "Male" ? t("genderMale") : t("genderFemale")}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Standalone Info & Actions Card (Below Image) */}
+                <div className="flex flex-col gap-3.5 rounded-[1.75rem] border-2 border-[#232B26]/15 bg-white p-5 shadow-sm">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-2xl font-black text-[#232B26]">
+                      <h3 className="text-2xl font-black text-[#232B26] tracking-tight">
                         {pet.name}
                       </h3>
-                      <p className="font-mono text-xs font-black uppercase text-[#00A170]">
+                      <p className="font-mono text-xs font-black uppercase tracking-wider text-[#00A170]">
                         {pet.breed}
                       </p>
                     </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setEditingPet(pet)}
+                        className="rounded-xl border border-[#232B26]/20 bg-[#F0EDE6] px-3.5 py-2 font-mono text-xs font-bold text-[#232B26] transition hover:bg-[#232B26] hover:text-white"
+                      >
+                        {t("editPet")}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(pet.id, pet.name)}
+                        className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 font-mono text-xs font-bold text-red-600 transition hover:bg-red-600 hover:text-white"
+                      >
+                        {t("deletePet")}
+                      </button>
+                    </div>
                   </div>
 
-                  <span className="rounded-full border-2 border-[#232B26] bg-[#85E0C0] px-3 py-1 font-mono text-[11px] font-black uppercase text-[#232B26] shadow-[2px_2px_0px_#232B26]">
-                    {pet.gender === "Male" ? t("genderMale") : t("genderFemale")}
-                  </span>
-                </div>
-
-                {/* Details */}
-                <div className="mt-4 grid grid-cols-2 gap-2 font-mono text-xs">
-                  <div className="rounded-xl border border-[#232B26] bg-white p-2">
-                    <span className="font-bold text-[#4B5750]">{t("ageLabel")}:</span>{" "}
-                    <span className="font-black">{pet.age}</span>
-                  </div>
-                  <div className="rounded-xl border border-[#232B26] bg-white p-2">
-                    <span className="font-bold text-[#4B5750]">{t("coatLabel")}:</span>{" "}
-                    <span className="font-black">{pet.color || "Standard"}</span>
-                  </div>
-                </div>
-
-                <div className="mt-3 rounded-xl border border-[#232B26] bg-white p-3 font-mono text-xs">
-                  <span className="font-bold text-[#00A170]">{t("qrTagLabel")}:</span>{" "}
-                  <span className="font-black">{pet.tagId}</span>
-                </div>
-
-                {pet.notes && (
-                  <p className="mt-3 text-xs font-semibold text-[#4B5750]">
-                    {pet.notes}
-                  </p>
-                )}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="mt-5 flex items-center justify-between border-t-2 border-[#232B26]/20 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveQrPet(pet)}
-                  className="rounded-xl border-2 border-[#232B26] bg-[#FFD6A5] px-3 py-1.5 font-mono text-xs font-black text-[#232B26] shadow-[2px_2px_0px_#232B26] transition hover:bg-[#ffc27d]"
-                >
-                  {t("viewQrTag")}
-                </button>
-
-                <div className="flex items-center gap-2">
+                  {/* Full-Width View QR Tag Button */}
                   <button
                     type="button"
-                    onClick={() => handleDelete(pet.id)}
-                    className="rounded-xl border-2 border-[#232B26] bg-[#FF6B00] px-3 py-1.5 font-mono text-xs font-black text-white shadow-[2px_2px_0px_#232B26] transition hover:bg-[#e05e00]"
+                    onClick={() => setActiveQrPet(pet)}
+                    className="w-full rounded-xl border-2 border-[#232B26] bg-[#00A170] py-2.5 font-mono text-xs font-black text-white shadow-[2px_2px_0px_#232B26] transition hover:bg-[#00875e] active:translate-x-0.5 active:translate-y-0.5"
                   >
-                    {t("deletePet")}
+                    {t("viewQrTag")}
                   </button>
                 </div>
               </div>
-            </article>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -230,15 +270,23 @@ export function PetProfileSection() {
         onDogCreated={handleDogCreated}
       />
 
-      {/* QR Code Modal Preview */}
+      {/* Edit Dog Modal */}
+      <EditDogModal
+        isOpen={!!editingPet}
+        pet={editingPet}
+        onClose={() => setEditingPet(null)}
+        onDogUpdated={() => loadBackendDogs()}
+      />
+
+      {/* Real QR Code Tag Modal */}
       {activeQrPet && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="fixed inset-0 bg-[#232B26]/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-[#232B26]/70 backdrop-blur-sm transition-opacity"
             onClick={() => setActiveQrPet(null)}
           />
 
-          <div className="relative w-full max-w-sm rounded-[2rem] border-4 border-[#232B26] bg-white p-6 text-center shadow-[12px_12px_0px_#232B26]">
+          <div className="relative w-full max-w-sm rounded-[2rem] border-4 border-[#232B26] bg-white p-6 text-center shadow-[14px_14px_0px_#232B26]">
             <p className="font-mono text-xs font-black uppercase text-[#00A170]">
               {t("qrModalSubtitle")}
             </p>
@@ -249,25 +297,16 @@ export function PetProfileSection() {
               {activeQrPet.breed} · {activeQrPet.tagId}
             </p>
 
-            {/* QR Mock graphic */}
-            <div className="mx-auto mt-5 grid h-48 w-48 place-items-center rounded-2xl border-4 border-[#232B26] bg-[#FFD6A5] p-4 shadow-[4px_4px_0px_#232B26]">
-              <div className="grid h-36 w-36 grid-cols-4 grid-rows-4 gap-1.5 rounded-xl border-2 border-[#232B26] bg-white p-2">
-                <div className="bg-[#232B26]" />
-                <div className="bg-[#232B26]" />
-                <div className="bg-transparent" />
-                <div className="bg-[#232B26]" />
-                <div className="bg-[#232B26]" />
-                <div className="bg-[#00A170]" />
-                <div className="bg-[#232B26]" />
-                <div className="bg-transparent" />
-                <div className="bg-transparent" />
-                <div className="bg-[#232B26]" />
-                <div className="bg-[#232B26]" />
-                <div className="bg-[#232B26]" />
-                <div className="bg-[#232B26]" />
-                <div className="bg-transparent" />
-                <div className="bg-[#00A170]" />
-                <div className="bg-[#232B26]" />
+            {/* Real SVG QR Code Display Container */}
+            <div className="mx-auto mt-5 grid h-52 w-52 place-items-center rounded-2xl border-4 border-[#232B26] bg-[#FFD6A5] p-3 shadow-[6px_6px_0px_#232B26]">
+              <div className="rounded-xl border-2 border-[#232B26] bg-white p-2.5 shadow-inner">
+                <QRCodeSVG
+                  ref={qrSvgRef}
+                  value={getPublicQrUrl(activeQrPet)}
+                  size={160}
+                  level="H"
+                  includeMargin={false}
+                />
               </div>
             </div>
 
@@ -275,13 +314,33 @@ export function PetProfileSection() {
               {t("qrModalAdvice")}
             </p>
 
-            <button
-              type="button"
-              onClick={() => setActiveQrPet(null)}
-              className="mt-5 w-full rounded-2xl border-2 border-[#232B26] bg-[#232B26] py-3 font-mono text-xs font-black uppercase text-white shadow-[3px_3px_0px_#85E0C0]"
-            >
-              {t("closeBtn")}
-            </button>
+            {/* Action Buttons for QR Tag */}
+            <div className="mt-5 flex flex-col gap-2">
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={handleDownloadQr}
+                  className="rounded-xl border-2 border-[#232B26] bg-[#85E0C0] py-2.5 font-mono text-xs font-black text-[#232B26] shadow-[2px_2px_0px_#232B26] transition hover:bg-[#6bd6b1]"
+                >
+                  {t("downloadQrBtn")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleCopyLink(activeQrPet)}
+                  className="rounded-xl border-2 border-[#232B26] bg-[#FFD6A5] py-2.5 font-mono text-xs font-black text-[#232B26] shadow-[2px_2px_0px_#232B26] transition hover:bg-[#ffc27d]"
+                >
+                  {isCopied ? t("linkCopied") : t("copyLinkBtn")}
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setActiveQrPet(null)}
+                className="mt-1 w-full rounded-xl border-2 border-[#232B26] bg-[#232B26] py-3 font-mono text-xs font-black uppercase text-white shadow-[3px_3px_0px_#85E0C0] transition hover:bg-[#343e38]"
+              >
+                {t("closeBtn")}
+              </button>
+            </div>
           </div>
         </div>
       )}

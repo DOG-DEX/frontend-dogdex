@@ -6,7 +6,7 @@
     "editProfileBtn": "Edit Profile",
     "locationLabel": "LOC:",
     "favoriteBreedLabel": "FAV:",
-    "petSectionTitle": "Pet Profiles & Identity",
+    "petSectionTitle": "Pet Profiles",
     "petSectionSubtitle": "Manage your pet records, health notes, and smart QR collar tags.",
     "addPetBtn": "+ Create Dog Profile",
     "emptyPets": "No pet profiles created yet. Click the button above to create your first pet profile!",
@@ -56,6 +56,9 @@
     "locationFieldLabel": "Location",
     "favoriteBreedFieldLabel": "Favorite Breed",
     "bioLabel": "Bio / Trainer Notes",
-    "saveChangesBtn": "Save Changes"
+    "saveChangesBtn": "Save Changes",
+    "downloadQrBtn": "Download QR Tag",
+    "copyLinkBtn": "Copy Share Link",
+    "linkCopied": "Copied!"
   }
 }

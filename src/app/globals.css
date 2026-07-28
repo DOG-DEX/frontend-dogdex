@@ -225,6 +225,12 @@ body {
   border: 2px solid #232B26;
   border-radius: 8px;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #00A170;
+/* ==========================================================================
+   7. DITHER CANVAS CONTAINER
+   ========================================================================== */
+.dither-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
+

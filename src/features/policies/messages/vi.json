@@ -1,0 +1,65 @@
+{
+  "Policies": {
+    "tag": "DogDex Store Policies",
+    "title": "Trung Tâm Chính Sách & Điều Khoản",
+    "subtitle": "Minh bạch 100% cho mọi dịch vụ mua sắm vòng cổ chó và chăm sóc thú cưng. Nhấp vào các mục bên dưới để xem chi tiết.",
+    "print": "In Trang",
+    "searchPlaceholder": "Tìm kiếm từ khóa (ví dụ: đổi trả, COD, GHTK, 7 ngày)...",
+    "tabPrivacy": "Bảo Mật Thông Tin",
+    "tabTerms": "Điều Khoản Sử Dụng",
+    "tabRefund": "Đổi Trả & Hoàn Tiền",
+    "tabShipping": "Chính Sách Vận Chuyển",
+    "directLinks": "Trang chính sách riêng lẻ:",
+
+    "p11Title": "1.1 Thu Thập Thông Tin Cá Nhân Khách Hàng",
+    "p11Badge": "BẢO MẬT",
+    "p11Content": "Hệ thống Pet Care Dog Dex chỉ thu thập các dữ liệu thông tin cá nhân cần thiết bao gồm: Họ tên đầy đủ, Số điện thoại liên lạc, Email cá nhân và Địa chỉ nhận hàng. Những dữ liệu này được dùng khi quý khách đăng ký tài khoản, đặt mua vòng cổ chó hoặc đặt dịch vụ chăm sóc thú cưng.",
+
+    "p12Title": "1.2 Mục Đích Sử Dụng Dữ Liệu & Unsubscribe Marketing",
+    "p12Badge": "MARKETING",
+    "p12Intro": "Dữ liệu cá nhân thu thập được sử dụng cho các mục đích chính bao gồm:",
+    "p12Bullet1": "Xác nhận đơn hàng vòng cổ chó, đóng gói và bàn giao hàng.",
+    "p12Bullet2": "Liên hệ chăm sóc khách hàng và hỗ trợ kỹ thuật khi cần thiết.",
+    "p12Bullet3": "Gửi chương trình ưu đãi qua Email hoặc SMS Marketing.",
+    "p12Unsub": "Quyền hủy nhận tin: Quý khách có thể bấm nút \"Hủy nhận tin / Unsubscribe\" ở cuối mỗi Email Marketing bất cứ lúc nào.",
+
+    "p13Title": "1.3 Cam Kết Không Chia Sẻ Cho Bên Thứ Ba",
+    "p13Badge": "CAM KẾT",
+    "p13Content": "Dog Dex cam kết tuyệt đối KHÔNG BÁN, KHÔNG CHO THUÊ, KHÔNG TRAO ĐỔI dữ liệu cá nhân của khách hàng. Thông tin nhận hàng chỉ được chia sẻ duy nhất với các đơn vị vận chuyển chính thức (như GHTK, GHN, Viettel Post...) để phục vụ giao hàng.",
+
+    "t21Title": "2.1 Trách Nhiệm Cam Kết Khai Báo Thông Tin Chính Xác",
+    "t21Badge": "ĐIỀU KHOẢN",
+    "t21Content": "Khách hàng cam kết khai báo đúng và chính xác Họ tên, Số điện thoại và địa chỉ nhận hàng chính chủ. Khách hàng chịu trách nhiệm pháp lý đối với thông tin đã cung cấp. Chúng tôi có quyền từ chối phục vụ nếu phát hiện thông tin giả mạo.",
+
+    "t22Title": "2.2 Quy Định Giá Cả & Phương Thức Thanh Toán",
+    "t22Badge": "THANH TOÁN",
+    "t22Intro": "Tất cả sản phẩm vòng cổ chó và dịch vụ đều niêm yết bằng VNĐ.",
+    "t22CodTitle": "Thanh toán khi nhận hàng (COD)",
+    "t22CodDesc": "Thanh toán tiền mặt cho shipper khi nhận và kiểm hàng.",
+    "t22BankTitle": "Chuyển khoản Ngân hàng",
+    "t22BankDesc": "Chuyển khoản nhanh qua tài khoản ngân hàng hoặc quét QR.",
+
+    "r31Title": "3.1 Thời Hạn 07 Ngày Đổi Trả & Điều Kiện Chấp Nhận",
+    "r31Badge": "ĐỔI TRẢ",
+    "r31Intro": "Áp dụng đổi trả vòng cổ chó trong vòng 07 ngày làm việc kể từ khi nhận hàng cho các trường hợp:",
+    "r31Bullet1": "Giao sai kích thước (size), sai màu sắc hoặc sai mẫu.",
+    "r31Bullet2": "Sản phẩm gặp lỗi kỹ thuật từ nhà sản xuất (hỏng khóa, đứt may).",
+
+    "r32Title": "3.2 Yêu Cầu Tình Trạng Sản Phẩm Đổi Trả",
+    "r32Badge": "YÊU CẦU",
+    "r32Bullet1": "Sản phẩm vòng cổ chó phải còn nguyên tem mác niêm phong.",
+    "r32Bullet2": "Sản phẩm chưa qua sử dụng thực tế, chưa bị bẩn hoặc dính lông.",
+    "r32Bullet3": "Tuyệt đối chưa bị vật nuôi / thú cưng cào rách hoặc gặm nhấm.",
+
+    "s41Title": "4.1 Thời Gian Xử Lý Đơn Hàng",
+    "s41Badge": "ĐÓNG GÓI",
+    "s41Content": "Đơn hàng sau khi xác nhận sẽ được xử lý đóng gói từ 1 đến 2 ngày làm việc (không tính Chủ Nhật và ngày Lễ Tết).",
+
+    "s42Title": "4.2 Thời Gian Giao Hàng Nội Địa",
+    "s42Badge": "VẬN CHUYỂN",
+    "s42Urban": "NỘI THÀNH (TP.HCM / HÀ NỘI)",
+    "s42UrbanTime": "Từ 1 - 2 ngày làm việc",
+    "s42Province": "CÁC TỈNH THÀNH KHÁC",
+    "s42ProvinceTime": "Từ 2 - 5 ngày làm việc"
+  }
+}

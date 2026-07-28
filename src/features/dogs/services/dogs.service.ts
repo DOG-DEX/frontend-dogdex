@@ -10,9 +10,9 @@ type BreedListItem = {
   mediaPath?: string;
 };
 
-function mediaUrl(mediaPath?: string) {
+export function mediaUrl(mediaPath?: string) {
   if (!mediaPath) return undefined;
-  if (/^https?:\/\//i.test(mediaPath)) return mediaPath;
+  if (/^(https?:\/\/|data:|blob:)/i.test(mediaPath)) return mediaPath;
 
   const normalizedPath = mediaPath.startsWith('/')
     ? mediaPath
@@ -75,16 +75,18 @@ export const dogsService = {
   },
 
   async createDog(payload: CreateDogPayload): Promise<BackendDogDoc> {
-    const result = await apiFetch<{ data: BackendDogDoc }>('/api/dog', {
+    const result = await apiFetch<any>('/api/dog', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
-    });
-    return result.data;
+    }, true);
+    return result?.data ?? result;
   },
 
   async listMyDogs(): Promise<BackendDogDoc[]> {
-    const result = await apiFetch<{ data: BackendDogDoc[] }>('/api/dog/my-dogs');
-    return result.data || [];
+    const result = await apiFetch<any>('/api/dog/my-dogs', {}, true);
+    if (Array.isArray(result)) return result;
+    return result?.data || [];
   },
 
   async predictBreed(file: File): Promise<string | undefined> {
@@ -98,5 +100,37 @@ export const dogsService = {
     });
 
     return result.data?.breed || result.data?.topBreeds?.[0]?.breed;
+  },
+
+  async deleteDog(id: string): Promise<void> {
+    await apiFetch(`/api/dog/${id}`, {
+      method: 'DELETE',
+    }, true);
+  },
+
+  async uploadImage(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', 'image');
+
+    const result = await apiFetch<any>('/api/medias/upload', {
+      method: 'POST',
+      body: formData,
+    }, true);
+
+    return result?.media?.mediaPath || result?.mediaPath || result?.data?.mediaPath || '';
+  },
+
+  async updateDog(id: string, payload: Partial<CreateDogPayload>): Promise<BackendDogDoc> {
+    const result = await apiFetch<any>(`/api/dog/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }, true);
+    return result?.data ?? result;
+  },
+
+  mediaUrl(mediaPath?: string): string | undefined {
+    return mediaUrl(mediaPath);
   },
 };
