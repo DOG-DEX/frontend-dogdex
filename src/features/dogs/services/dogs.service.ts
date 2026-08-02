@@ -58,13 +58,9 @@ type PredictionResult = {
 };
 
 export const dogsService = {
-  async listBreeds(limit = 150): Promise<Breed[]> {
-    // Backend response structure (double-wrapped):
-    //   raw:     { data: { data: [...], pagination: {...} } }
-    //   after apiFetch unwrap(): { data: BreedListItem[], pagination: {...} }
-    // Pass limit parameter to fetch full dataset (e.g. 120 breeds) instead of default page limit of 20
-    const result = await apiFetch<{ data: BreedListItem[]; pagination: unknown }>(
-      `/api/wiki/dogs?limit=${limit}`,
+  async listBreeds(limit = 500, lang = 'en'): Promise<Breed[]> {
+    const result = await apiFetch<{ data: BreedListItem[]; pagination?: { total: number; totalPages: number } }>(
+      `/api/wiki/dogs?limit=${limit}&lang=${lang}`,
     );
     return result.data.map((breed) => ({
       id: breed._id,
@@ -113,10 +109,11 @@ export const dogsService = {
     }, true);
   },
 
-  async uploadImage(file: File): Promise<string> {
+  async uploadImage(file: File, folder = 'uploads/dog'): Promise<string> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('type', 'image');
+    formData.append('folder', folder);
 
     const result = await apiFetch<any>('/api/medias/upload', {
       method: 'POST',

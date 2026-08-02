@@ -4,13 +4,13 @@ Per-feature documentation and progress tracking for Dog Dex frontend.
 
 ## Features
 
-| Feature | Routes | Progress |
-|---------|--------|----------|
-| Home | `/` | [progress.md](./home/progress.md) |
-| Auth | `/login`, `/register` | [progress.md](./auth/progress.md) |
-| Dogs (Dex) | `/dex` | [progress.md](./dogs/progress.md) |
-| Scan | `/scan` | [progress.md](./scan/progress.md) |
-| Profile | `/profile` | [progress.md](./profile/progress.md) |
+| Feature | Routes | Progress | Specification |
+|---------|--------|----------|---------------|
+| Home | `/` | [progress.md](./home/progress.md) | — |
+| Auth | `/login`, `/register` | [progress.md](./auth/progress.md) | — |
+| Dogs (Dex) | `/dex` | [progress.md](./dogs/progress.md) | [progress.md](./collection/progress.md) |
+| Scan | `/scan` | [progress.md](./scan/progress.md) | — |
+| Profile | `/profile` | [progress.md](./profile/progress.md) | — |
 
 ## Adding a new feature
 

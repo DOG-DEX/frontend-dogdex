@@ -95,7 +95,7 @@ export function EditDogModal({
 
     if (selectedPhoto) {
       try {
-        uploadedAvatarPath = await dogsService.uploadImage(selectedPhoto);
+        uploadedAvatarPath = await dogsService.uploadImage(selectedPhoto, 'uploads/dog');
       } catch (uploadErr: any) {
         toast.error(
           "IMAGE UPLOAD FAILED",

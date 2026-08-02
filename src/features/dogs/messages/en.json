@@ -1,6 +1,13 @@
 {
   "DexView": {
     "title": "Collection",
-    "description": "Browse discovered breeds and track your collection progress."
+    "description": "Browse discovered breeds and track your collection progress.",
+    "fieldGuide": "DOGDEX FIELD GUIDE",
+    "progress": "DISCOVERED PROGRESS",
+    "searchPlaceholder": "SEARCH BREED OR SLUG...",
+    "collectEntry": "COLLECT ENTRY",
+    "collected": "COLLECTED",
+    "missing": "MISSING",
+    "legendary": "LEGENDARY"
   }
 }

@@ -76,9 +76,12 @@ export async function apiFetch<T>(
     if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
   }
 
+  const controllerSignal = options.signal || AbortSignal.timeout(5000);
+
   const response = await fetch(`${env.apiBaseUrl}${path}`, {
     ...options,
     headers,
+    signal: controllerSignal,
     credentials: 'include',
   });
 
