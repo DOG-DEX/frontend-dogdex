@@ -28,6 +28,8 @@ docs/
 ├── architecture/architecture-design.md
 └── features/
     ├── README.md
+    ├── collection/
+    │   └── collection_ui_changes.md
     └── */progress.md      (one per feature)
 ```
 
@@ -36,8 +38,8 @@ docs/
 | Property | Value |
 |----------|-------|
 | Project | `frontend-dogdex` |
-| Doc version | `1.0.0` |
-| Last updated | 2026-07-24 |
+| Doc version | `1.2.0` |
+| Last updated | 2026-08-02 |
 
 ## For AI agents
 

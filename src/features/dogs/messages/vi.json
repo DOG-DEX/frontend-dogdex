@@ -1,6 +1,13 @@
 {
   "DexView": {
     "title": "Bộ sưu tập giống",
-    "description": "Xem các giống đã khám phá và theo dõi tiến độ bộ sưu tập."
+    "description": "Xem các giống đã khám phá và theo dõi tiến độ bộ sưu tập.",
+    "fieldGuide": "CẨM NANG DOGDEX",
+    "progress": "TIẾN ĐỘ KHÁM PHÁ",
+    "searchPlaceholder": "TÌM GIỐNG HOẶC TÊN...",
+    "collectEntry": "THÊM VÀO BỘ SƯU TẬP",
+    "collected": "ĐÃ KHÁM PHÁ",
+    "missing": "CHƯA CÓ",
+    "legendary": "QUÝ HIẾM"
   }
 }

@@ -139,7 +139,7 @@ export function ProfileView() {
 
     setIsUploadingAvatar(true);
     try {
-      const uploadedMediaPath = await dogsService.uploadImage(file);
+      const uploadedMediaPath = await dogsService.uploadImage(file, 'uploads/profile');
 
       const updated = await profileService.updateProfile({
         avatarPath: uploadedMediaPath,

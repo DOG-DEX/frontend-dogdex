@@ -4,6 +4,18 @@ All notable changes to the frontend-dogdex documentation set.
 
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.2.0] - 2026-08-02
+
+### Added
+
+- `features/collection/collection_ui_changes.md` — Refactored feature specification for the Neo-Brutalist Collection Workstation UI using relative file links and standard metadata.
+
+### Changed
+
+- `features/dogs/progress.md` — Updated Dogs (Dex) feature status from `skeleton` to `implemented` with component list and completed features checklist.
+- `PROGRESS.md` — Updated master dashboard summary counts (Dogs implemented: 1, total implemented: 6, total documented: 4) and marked task `T-002` as done.
+- `features/README.md` & `README.md` — Updated index links and doc version snapshot to `1.2.0`.
+
 ## [1.1.0] - 2026-07-27
 
 ### Changed
