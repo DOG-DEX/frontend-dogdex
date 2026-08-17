@@ -18,7 +18,7 @@ Start with **[docs/START_HERE.md](./docs/START_HERE.md)** (Vietnamese onboarding
 | Doc | Purpose |
 |-----|---------|
 | [docs/README.md](./docs/README.md) | Documentation hub |
-| [docs/architecture/architecture-design.md](./docs/architecture/architecture-design.md) | Source structure & conventions |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Source structure & conventions |
 | [docs/PROGRESS.md](./docs/PROGRESS.md) | Build progress dashboard |
 
 ## Source layout

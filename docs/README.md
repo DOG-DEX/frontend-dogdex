@@ -12,7 +12,7 @@ Central documentation for **frontend-dogdex**: architecture, feature progress, a
 | [AGENT_GUIDE.md](./AGENT_GUIDE.md) | AI agents | Update rules & templates |
 | [PROGRESS.md](./PROGRESS.md) | Everyone | Master progress dashboard |
 | [CHANGELOG.md](./CHANGELOG.md) | Maintainers | Doc version history |
-| [architecture/architecture-design.md](./architecture/architecture-design.md) | Everyone | Frontend architecture & conventions |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | Everyone | Frontend architecture & conventions |
 | [features/README.md](./features/README.md) | Everyone | Per-feature index |
 
 ## Folder layout
@@ -24,12 +24,14 @@ docs/
 ├── AGENT_GUIDE.md
 ├── PROGRESS.md
 ├── CHANGELOG.md
-├── versioning/CONVENTIONS.md
-├── architecture/architecture-design.md
+├── ARCHITECTURE.md
+├── DECISIONS.md
+├── PLAN.md
+├── DESIGN_TOKENS.md
+├── TESTING.md
+├── versioning/conventions.md
 └── features/
     ├── README.md
-    ├── collection/
-    │   └── collection_ui_changes.md
     └── */progress.md      (one per feature)
 ```
 

@@ -1,46 +1,37 @@
-# Frontend Builder Progress — Master Dashboard
+# Frontend Builder Progress - Master Dashboard
 
-> **Doc version:** 1.7.0 · **Last updated:** 2026-08-02  
-> Agents: update feature files first, then sync summary counts here.
+Doc version: 2.0.0
+Last updated: 2026-08-18
 
-## Summary
+## Master Summary
 
-| Feature | Routes | Skeleton+ | Implemented+ | Tested | Documented |
-|---------|--------|-----------|--------------|--------|------------|
-| [Home](./features/home/progress.md) | 1 | 1 | 1 | 0 | yes |
-| [Auth](./features/auth/progress.md) | 2 | 2 | 2 | 0 | yes |
-| [Dogs (Dex)](./features/dogs/progress.md) | 1 | 1 | 1 | 0 | yes |
-| [Scan](./features/scan/progress.md) | 1 | 1 | 0 | 0 | partial |
-| [Profile](./features/profile/progress.md) | 1 | 1 | 1 | 0 | yes |
-| **Total** | **6** | **6** | **6** | **0** | **4 full** |
+| Feature | Routes | Implemented | Tested | Documented | Feature Plan Link |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Home** | `/` | Yes | Pending | Yes | [features/home/progress.md](./features/home/progress.md) |
+| **Dogs (Dex & Radar)** | `/dex`, `/find`, `/breed/[slug]` | Yes | Pending | Yes | [features/dogs/progress.md](./features/dogs/progress.md) |
+| **Scan & AI Vision** | `/scan`, `/pet/[tagId]`, `/history` | Yes | Pending | Yes | [features/scan/progress.md](./features/scan/progress.md) |
+| **Products & Checkout** | `/products`, `/checkout` | Yes | Pending | Yes | [features/products/progress.md](./features/products/progress.md) |
+| **Profile** | `/profile` | Yes | Pending | Yes | [features/profile/progress.md](./features/profile/progress.md) |
+| **Community** | `/community` | Yes | Pending | Yes | [features/community/progress.md](./features/community/progress.md) |
+| **Admin Dashboard** | `/admin` | Yes | Pending | Yes | [features/admin/progress.md](./features/admin/progress.md) |
+| **Policies** | `/policies` | Yes | Pending | Yes | [features/policies/progress.md](./features/policies/progress.md) |
 
-## Build phases
+## Master Build Phases
 
 | Phase | Scope | Status |
-|-------|-------|--------|
-| P0 — Scaffold | Folder structure, routing, i18n, docs hub | done |
-| P1 — Core UX | Home, SiteNav Morphic Redesign, Scan upload, Dex collection grid | in_progress |
-| P2 — Auth | Login, register, OTP verification, HttpOnly cookie refresh token & auto-refresh | done |
-| P3 — Profile | Profile redesign, expandable edit panel, country/city selection, avatar management & validation | done |
-| P4 — Quality | Tests, accessibility, performance | planned |
+| :--- | :--- | :--- |
+| P0 - Scaffold | Folder structure, routing, i18n, docs hub | Completed |
+| P1 - Core UX | Home, SiteNav Morphic Redesign, Scan upload, Dex collection grid | Completed |
+| P2 - Lost Dog Radar | Leaflet full-screen map, 0ms SWR hydration, discrete zoom snap, Top 5 Proximity Tile Pre-fetcher | Completed |
+| P3 - AI Scanner | WebRTC camera viewfinder, camera flip, instant Pokedex unlock | Completed |
+| P4 - Admin & Fulfillment | Physical QR collar orders, custom engraving queue, emergency scan logs | In Progress |
+| P5 - Quality & Testing | Vitest component & service unit tests | Planned |
 
-## Blockers & TODOs
+## Master Feature Links
 
-| ID | Feature | Item | Priority |
-|----|---------|------|----------|
-| T-001 | Scan | Wire upload UI to scan API | high |
-| T-002 | Dogs | Breed list + collection grid | done |
-| T-003 | Auth | Connect auth service + session | done |
-| T-004 | All | Add unit tests for views/services | medium |
-
-## Feature links
-
-- [Home](./features/home/progress.md)
-- [Auth](./features/auth/progress.md)
-- [Dogs (Dex)](./features/dogs/progress.md)
-- [Scan](./features/scan/progress.md)
-- [Profile](./features/profile/progress.md)
-
-## Architecture
-
-See [architecture/architecture-design.md](./architecture/architecture-design.md).
+- [Dogs (Dex & Radar Map) Feature Plan](./features/dogs/progress.md)
+- [Scan & AI Vision Feature Plan](./features/scan/progress.md)
+- [Admin Module Feature Plan](./features/admin/progress.md)
+- [Profile & Pet Management Feature Plan](./features/profile/progress.md)
+- [Master Implementation Plan & Migration Matrix](./PLAN.md)
+- [Architecture Decisions Log](./DECISIONS.md)

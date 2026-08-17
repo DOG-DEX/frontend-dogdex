@@ -1,115 +1,62 @@
-# Bắt đầu từ đây — Hướng dẫn docs frontend-dogdex
+# Bat dau tu day - Huong dan docs frontend-dogdex
 
-> **Đọc file này trước.** Mọi thứ khác trong folder `docs/` chỉ là chi tiết bổ sung.
-
----
-
-## 1. Docs này dùng để làm gì? (1 phút)
-
-Bạn đang xây **Dog Dex** — app Next.js nhận diện giống chó và bộ sưu tập breed. Folder `docs/` giúp:
-
-| Vấn đề | Docs giải quyết bằng file nào |
-|--------|-------------------------------|
-| "Cấu trúc source code thế nào?" | `architecture/architecture-design.md` |
-| "Feature này code xong chưa, test chưa?" | `features/<tên>/progress.md` |
-| "Toàn bộ app tiến độ thế nào?" | `PROGRESS.md` |
-| "AI agent cần tuân quy tắc gì?" | `AGENT_GUIDE.md` |
-| "Docs đổi phiên bản khi nào?" | `versioning/CONVENTIONS.md`, `CHANGELOG.md` |
-
-**Tóm lại:** Code nằm trong `src/`, docs nằm trong `docs/`. Docs **không thay code** — nó giúp bạn và AI **nhớ, theo dõi, không bị lạc**.
+Doc file nay truoc. Moi thu khac trong folder docs/ chi la chi tiet bo sung.
 
 ---
 
-## 2. Chỉ cần nhớ 3 loại file
+## 1. Docs nay dung de lam gi?
+
+Ban dang xay Dog Dex - app Next.js nhan dien giong cho va bo suu tap breed. Folder docs/ giup:
+
+| Van de | Docs giai quyet bang file nao |
+| :--- | :--- |
+| Cau truc source code the nao? | `ARCHITECTURE.md` |
+| Feature nay code xong chua, test chua? | `features/<ten>/progress.md` |
+| Toan bo app tien do the nao? | `PROGRESS.md` |
+| AI agent can tuan quy tac gi? | `AGENT_GUIDE.md` |
+| Docs doi phien ban khi nao? | `versioning/conventions.md`, `CHANGELOG.md` |
+
+Tom lai: Code nam trong src/, docs nam trong docs/. Docs khong thay code - no giup ban va AI nho, theo doi, khong bi lac.
+
+---
+
+## 2. Chi can nho 3 loai file
 
 ```
 docs/
-│
-├── 📘 HIỂU KIẾN TRÚC    →  architecture/architecture-design.md
-├── 📊 THEO DÕI TIẾN ĐỘ  →  features/*/progress.md
-└── 📋 QUY TẮC & LỊCH SỬ  →  AGENT_GUIDE, PROGRESS, CHANGELOG
+|
++-- HIEU KIEN TRUC       -> ARCHITECTURE.md
++-- THEO DOI TIEN DO     -> features/*/progress.md
++-- QUY TAC VA LICH SU   -> AGENT_GUIDE, PROGRESS, CHANGELOG
 ```
 
-### Ví dụ cụ thể — feature Scan
+### Vi du cu the - feature Scan
 
-| File | Mở khi nào |
-|------|------------|
-| [`features/scan/progress.md`](./features/scan/progress.md) | Muốn biết upload ảnh / API scan đã làm tới đâu |
-| [`PROGRESS.md`](./PROGRESS.md) | Muốn xem **tổng** 5 feature |
+| File | Mo khi nao |
+| :--- | :--- |
+| `features/scan/progress.md` | Muon biet upload anh / API scan da lam toi dau |
+| `PROGRESS.md` | Muon xem tong cac feature |
 
 ---
 
-## 3. Bạn đọc docs thế nào? (3 tình huống)
+## 3. Ban doc docs the nao? (3 tinh huong)
 
-### Tình huống A — "Tôi mới vào project"
+### Tinh huong A - Tôi moi vao project
+1. File nay (`START_HERE.md`)
+2. `ARCHITECTURE.md`
+3. `PROGRESS.md`
 
-1. **File này** (START_HERE.md)
-2. [`architecture/architecture-design.md`](./architecture/architecture-design.md)
-3. [`PROGRESS.md`](./PROGRESS.md)
-
-⏱ Khoảng 10–15 phút là nắm được bức tranh lớn.
-
-### Tình huống B — "Tôi sắp code/sửa 1 feature"
-
-1. Mở `features/<feature>/progress.md`
+### Tinh huong B - Tôi sap code/sua 1 feature
+1. Mo `features/<feature>/progress.md`
 2. Code trong `src/features/<feature>/`
-3. Sau khi xong → cập nhật progress + `PROGRESS.md`
+3. Sau khi xong -> cap nhat progress + `PROGRESS.md`
 
-### Tình huống C — "Tôi chỉ muốn biết còn bao nhiêu việc"
-
-Mở [`PROGRESS.md`](./PROGRESS.md) — bảng Summary và Blockers & TODOs.
-
----
-
-## 4. Quy trình quản lý docs
-
-### Quy tắc vàng
-
-> **Code thay đổi → docs cập nhật trong cùng PR/commit (hoặc ngay sau đó).**
-
-### Cột status trong progress
-
-| Cột | Giá trị | Nghĩa |
-|-----|---------|-------|
-| **Status** | `planned` | Chưa có code |
-| | `skeleton` | Có view/route, logic còn sơ sài |
-| | `implemented` | UI + service hookup xong |
-| | `tested` | Đã có test |
-| | `stable` | Xong hẳn, không còn bug known |
-| **Tests** | `yes` / `no` / `partial` | Có test chưa? |
-| **Docs** | `yes` / `no` / `partial` | architecture/progress đã mô tả chưa? |
-
-### Khi nào ghi CHANGELOG?
-
-| Việc làm | Cần CHANGELOG? |
-|----------|----------------|
-| Sửa status `implemented` → `tested` | Không bắt buộc |
-| Thêm feature mới vào docs | Nên ghi (MINOR) |
-| Đổi routing / breaking UX | Bắt buộc (MAJOR) |
+### Tinh huong C - Tôi chi muon biet con bao nhieu viec
+Mo `PROGRESS.md` - bang Summary va Blockers & TODOs.
 
 ---
 
-## 5. Nhờ AI agent (copy prompt)
+## 4. Quy trinh quan ly docs
 
-```
-Đọc frontend-dogdex/docs/START_HERE.md và AGENT_GUIDE.md trước.
-Sau khi sửa code, cập nhật đúng features/<feature>/progress.md và PROGRESS.md.
-Không tạo file docs mới nếu không cần. Giữ docs bằng tiếng Anh (trừ START_HERE.md).
-```
-
----
-
-## 6. Bản đồ nhanh
-
-| Muốn… | Mở file |
-|--------|---------|
-| Hiểu tổng quan docs | **START_HERE.md** |
-| Hiểu cấu trúc src/ | `architecture/architecture-design.md` |
-| Xem Scan code xong chưa | `features/scan/progress.md` |
-| Xem toàn app | `PROGRESS.md` |
-| Quy tắc cho AI | `AGENT_GUIDE.md` |
-| Lịch sử phiên bản docs | `CHANGELOG.md` |
-
----
-
-*File này là chuẩn vận hành docs. Khi thắc mắc, quay lại đây trước.*
+### Quy tac vang
+> Code thay doi -> docs cap nhat trong cung PR/commit (hoac ngay sau do).

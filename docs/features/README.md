@@ -8,9 +8,11 @@ Per-feature documentation and progress tracking for Dog Dex frontend.
 |---------|--------|----------|---------------|
 | Home | `/` | [progress.md](./home/progress.md) | — |
 | Auth | `/login`, `/register` | [progress.md](./auth/progress.md) | — |
-| Dogs (Dex) | `/dex` | [progress.md](./dogs/progress.md) | [progress.md](./collection/progress.md) |
+| Dogs (Dex) | `/dex` | [progress.md](./dogs/progress.md) | — |
 | Scan | `/scan` | [progress.md](./scan/progress.md) | — |
 | Profile | `/profile` | [progress.md](./profile/progress.md) | — |
+| Collection | `/collection` | [progress.md](./collection/progress.md) | — |
+| Policies | `/privacy`, `/terms` | [progress.md](./policies/progress.md) | — |
 
 ## Adding a new feature
 
