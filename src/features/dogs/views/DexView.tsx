@@ -315,10 +315,10 @@ export function DexView() {
             totalCount={breeds.length}
           />
 
-          {/* Grid Content */}
-          <div className="min-h-[420px] flex-1">
+          {/* Grid Content Box */}
+          <div className="min-h-[420px] flex-1 rounded-2xl border-4 border-[#232B26] bg-white/80 p-5 shadow-[6px_6px_0px_#232B26]">
             {isLoading && (
-              <div className="flex h-80 flex-col items-center justify-center rounded-2xl border-4 border-[#232B26] bg-white p-6 text-center shadow-[6px_6px_0px_#232B26]">
+              <div className="flex h-80 flex-col items-center justify-center text-center">
                 <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#232B26] border-t-[#FF6B00]" />
                 <p className="mt-4 font-mono text-sm font-black text-[#232B26]">
                   LOADING BREED COLLECTION...
@@ -327,7 +327,7 @@ export function DexView() {
             )}
 
             {error && (
-              <div className="flex h-80 flex-col items-center justify-center rounded-2xl border-4 border-[#232B26] bg-[#FFD6A5] p-6 text-center shadow-[6px_6px_0px_#232B26]">
+              <div className="flex h-80 flex-col items-center justify-center rounded-xl border-2 border-[#232B26] bg-[#FFD6A5] p-6 text-center">
                 <p className="text-xl font-black text-[#232B26]">Dex Unavailable</p>
                 <p className="mt-2 text-sm font-medium text-[#4B5750]">{error}</p>
                 <button
@@ -341,7 +341,7 @@ export function DexView() {
             )}
 
             {!isLoading && !error && currentBreeds.length === 0 && (
-              <div className="flex h-80 flex-col items-center justify-center rounded-2xl border-4 border-[#232B26] bg-white p-6 text-center shadow-[6px_6px_0px_#232B26]">
+              <div className="flex h-80 flex-col items-center justify-center text-center">
                 <span className="text-4xl">🔍</span>
                 <p className="mt-3 font-mono text-lg font-black text-[#232B26]">
                   NO MATCHING BREEDS FOUND
