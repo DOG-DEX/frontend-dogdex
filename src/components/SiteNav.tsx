@@ -12,8 +12,11 @@ import { getCloudinaryUrl } from "@/lib/media";
 // Static navigation configuration outside component scope to prevent reference churn
 const NAV_CONFIG = [
   { href: "/", key: "home" },
-  { href: "/products", key: "products" },
   { href: "/scan", key: "scan" },
+  { href: "/products", key: "products" },
+  { href: "/find", key: "find" },
+  { href: "/dex", key: "dex" },
+  { href: "/community", key: "community" },
 ] as const;
 
 /**
@@ -226,7 +229,7 @@ export function SiteNav() {
                           tabsRef.current[index] = el;
                         }}
                         href={item.href}
-                        className={`inline-flex items-center justify-center text-center rounded-full px-4 py-1.5 transition-colors duration-200 ${
+                        className={`inline-flex items-center justify-center text-center rounded-full px-4 py-1.5 whitespace-nowrap transition-colors duration-200 ${
                           active
                             ? "font-black text-white"
                             : "text-[#1A1C1B] hover:text-[#00A170]"
@@ -619,11 +622,28 @@ function DrawerNavIcon({ routeKey }: { routeKey: string }) {
           <path d="M12 12v9" />
         </svg>
       );
+    case "find":
+      return (
+        <svg {...iconProps}>
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+      );
     case "dex":
       return (
         <svg {...iconProps}>
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
           <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        </svg>
+      );
+    case "community":
+      return (
+        <svg {...iconProps}>
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
       );
     case "scan":
