@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect, FormEvent, ChangeEvent } from "react";
+import { useState, FormEvent, ChangeEvent } from "react";
 import { useTranslations } from "next-intl";
 import { dogsService, type CreateDogPayload } from "@/features/dogs/services/dogs.service";
-import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { useToast } from "@/components/ToastContext";
 import type { PetProfile } from "./PetProfileSection";
 
@@ -11,7 +10,7 @@ type EditDogModalProps = {
   isOpen: boolean;
   pet: PetProfile | null;
   onClose: () => void;
-  onDogUpdated: (updatedDog: any) => void;
+  onDogUpdated: (updatedDog: PetProfile) => void;
 };
 
 export function EditDogModal({
@@ -23,6 +22,7 @@ export function EditDogModal({
   const t = useTranslations("ProfileView");
   const { toast } = useToast();
 
+  const [prevPet, setPrevPet] = useState<PetProfile | null>(null);
   const [formState, setFormState] = useState({
     name: "",
     gender: "male" as "male" | "female",
@@ -39,7 +39,8 @@ export function EditDogModal({
   const [isAnalyzingAi, setIsAnalyzingAi] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
+  if (pet !== prevPet) {
+    setPrevPet(pet);
     if (pet) {
       setFormState({
         name: pet.name || "",
@@ -53,7 +54,7 @@ export function EditDogModal({
       });
       setPhotoPreview(pet.avatarUrl || null);
     }
-  }, [pet]);
+  }
 
   if (!isOpen || !pet) return null;
 
@@ -80,8 +81,9 @@ export function EditDogModal({
         setFormState((prev) => ({ ...prev, breed: detected }));
         toast.info("AI DETECTED BREED", `Identified as ${detected}`);
       }
-    } catch (err: any) {
-      toast.error("AI ANALYSIS FAILED", err.message || "Could not identify breed automatically.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Could not identify breed automatically.";
+      toast.error("AI ANALYSIS FAILED", msg);
     } finally {
       setIsAnalyzingAi(false);
     }
@@ -96,10 +98,11 @@ export function EditDogModal({
     if (selectedPhoto) {
       try {
         uploadedAvatarPath = await dogsService.uploadImage(selectedPhoto, 'uploads/dog');
-      } catch (uploadErr: any) {
+      } catch (uploadErr: unknown) {
+        const msg = uploadErr instanceof Error ? uploadErr.message : "Could not upload pet image to server.";
         toast.error(
           "IMAGE UPLOAD FAILED",
-          uploadErr.message || "Could not upload pet image to server."
+          msg
         );
         setIsSubmitting(false);
         return;
@@ -126,12 +129,13 @@ export function EditDogModal({
         "DOG UPDATED",
         `Successfully updated dog profile for "${formState.name}"!`
       );
-      onDogUpdated(updated);
+      onDogUpdated(updated as unknown as PetProfile);
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to update dog profile.";
       toast.error(
         "UPDATE FAILED",
-        err.message || "Failed to update dog profile."
+        msg
       );
     } finally {
       setIsSubmitting(false);

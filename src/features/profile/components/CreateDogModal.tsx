@@ -9,7 +9,7 @@ import { useToast } from "@/components/ToastContext";
 type CreateDogModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onDogCreated: (createdDog: any) => void;
+  onDogCreated: (createdDog: unknown) => void;
 };
 
 export function CreateDogModal({
@@ -63,8 +63,9 @@ export function CreateDogModal({
         setFormState((prev) => ({ ...prev, breed: detected }));
         toast.info("AI DETECTED BREED", `Identified as ${detected}`);
       }
-    } catch (err: any) {
-      toast.error("AI ANALYSIS FAILED", err.message || "Could not identify breed automatically.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Could not identify breed automatically.";
+      toast.error("AI ANALYSIS FAILED", msg);
     } finally {
       setIsAnalyzingAi(false);
     }
@@ -79,10 +80,11 @@ export function CreateDogModal({
     if (selectedPhoto) {
       try {
         uploadedAvatarPath = await dogsService.uploadImage(selectedPhoto);
-      } catch (uploadErr: any) {
+      } catch (uploadErr: unknown) {
+        const msg = uploadErr instanceof Error ? uploadErr.message : "Could not upload pet image to server.";
         toast.error(
           "IMAGE UPLOAD FAILED",
-          uploadErr.message || "Could not upload pet image to server."
+          msg
         );
         setIsSubmitting(false);
         return;
@@ -111,10 +113,11 @@ export function CreateDogModal({
         `Successfully created dog profile for "${created.name || formState.name}"!`
       );
       onDogCreated(created);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to create dog profile. Check connection or authentication.";
       toast.error(
         "CREATE FAILED",
-        err.message || "Failed to create dog profile. Check connection or authentication."
+        msg
       );
       // Fallback local pet object for guest/offline mode
       const fallbackDog = {
