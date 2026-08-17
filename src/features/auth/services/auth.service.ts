@@ -4,7 +4,6 @@ import type {
   AuthUser,
   ForgotPasswordPayload,
   LoginPayload,
-  RefreshTokenPayload,
   RegisterPayload,
   ResetPasswordPayload,
   VerifyOtpPayload,

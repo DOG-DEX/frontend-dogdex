@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, ChangeEvent } from "react";
+import { useState } from "react";
 import type { UserProfile } from "@/shared/types/auth";
 import { profileService } from "../services/profile.service";
 import { CountryStatePicker } from "./CountryStatePicker";
@@ -31,6 +31,9 @@ export function EditProfileDropdownPanel({
   onCancel,
 }: EditProfileDropdownPanelProps) {
   const { toast } = useToast();
+  const [prevIsOpen, setPrevIsOpen] = useState(false);
+  const [prevInitialData, setPrevInitialData] = useState<Partial<UserProfile> | null>(null);
+
   const [username, setUsername] = useState(initialData.username || "");
   const [email] = useState(initialData.email || "");
   const [firstName, setFirstName] = useState(initialData.firstName || "");
@@ -43,8 +46,9 @@ export function EditProfileDropdownPanel({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
-  // Sync state when initialData or isOpen changes
-  useEffect(() => {
+  if (isOpen !== prevIsOpen || initialData !== prevInitialData) {
+    setPrevIsOpen(isOpen);
+    setPrevInitialData(initialData);
     if (isOpen) {
       setUsername(initialData.username || "");
       setFirstName(initialData.firstName || "");
@@ -67,28 +71,23 @@ export function EditProfileDropdownPanel({
         }
       }
     }
-  }, [isOpen, initialData]);
+  }
 
-  // Real-time validations
+  if (!isOpen) return null;
+
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    // Username validation
-    const cleanUsername = username.trim().toLowerCase();
-    if (!cleanUsername) {
-      newErrors.username = "Username is required.";
-    } else if (cleanUsername.length < 3 || cleanUsername.length > 30) {
-      newErrors.username = "Username must be between 3 and 30 characters long.";
-    } else if (!/^[a-z0-9_]+$/.test(cleanUsername)) {
-      newErrors.username = "Username can only contain lowercase letters, numbers, and underscores.";
+    if (!username.trim()) {
+      newErrors.username = "Username is required";
+    } else if (username.trim().length < 3) {
+      newErrors.username = "Username must be at least 3 characters";
+    } else if (!/^[a-zA-Z0-9._-]+$/.test(username.trim())) {
+      newErrors.username = "Username can only contain letters, numbers, dots, underscores, hyphens";
     }
 
-    // Phone number validation
-    if (phoneNumber.trim()) {
-      const cleanPhone = phoneNumber.trim();
-      if (!/^[+0-9()\-\s]{6,30}$/.test(cleanPhone)) {
-        newErrors.phoneNumber = "Please enter a valid phone number (6-30 digits, optional +).";
-      }
+    if (phoneNumber.trim() && !/^\+?[0-9\s-]{8,15}$/.test(phoneNumber.trim())) {
+      newErrors.phoneNumber = "Invalid phone number format";
     }
 
     setErrors(newErrors);
@@ -97,6 +96,7 @@ export function EditProfileDropdownPanel({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!validateForm()) return;
 
     setIsSubmitting(true);
@@ -104,7 +104,7 @@ export function EditProfileDropdownPanel({
 
     try {
       const updated = await profileService.updateProfile({
-        username: username.trim().toLowerCase(),
+        username: username.trim(),
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         country: selectedCountryName,
@@ -113,8 +113,8 @@ export function EditProfileDropdownPanel({
       });
 
       onSaveSuccess(updated);
-    } catch (err: any) {
-      const errorMsg = err.message || "Failed to update profile. Please try again.";
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to update profile. Please try again.";
       setErrors((prev) => ({
         ...prev,
         general: errorMsg,

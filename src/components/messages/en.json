@@ -2,7 +2,10 @@
   "SiteNav": {
     "home": "Home",
     "products": "Products",
+    "find": "Lost Radar",
     "dex": "Collection",
+    "community": "Community",
+    "history": "History",
     "scan": "Scan",
     "profile": "Profile",
     "login": "Sign in",

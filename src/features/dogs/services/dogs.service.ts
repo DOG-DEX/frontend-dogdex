@@ -1,5 +1,4 @@
 import { apiFetch } from '@/lib/api';
-import { env } from '@/lib/env';
 import { getCloudinaryUrl } from '@/lib/media';
 import type { Breed } from '@/shared/types/breed';
 
@@ -76,7 +75,7 @@ export const dogsService = {
   },
 
   async createDog(payload: CreateDogPayload): Promise<BackendDogDoc> {
-    const result = await apiFetch<any>('/api/dog', {
+    const result = await apiFetch<{ data?: BackendDogDoc } & BackendDogDoc>('/api/dog', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -85,7 +84,7 @@ export const dogsService = {
   },
 
   async listMyDogs(): Promise<BackendDogDoc[]> {
-    const result = await apiFetch<any>('/api/dog/my-dogs', {}, true);
+    const result = await apiFetch<{ data?: BackendDogDoc[] } | BackendDogDoc[]>('/api/dog/my-dogs', {}, true);
     if (Array.isArray(result)) return result;
     return result?.data || [];
   },
@@ -115,7 +114,7 @@ export const dogsService = {
     formData.append('type', 'image');
     formData.append('folder', folder);
 
-    const result = await apiFetch<any>('/api/medias/upload', {
+    const result = await apiFetch<{ media?: { mediaPath?: string }; mediaPath?: string; data?: { mediaPath?: string } }>('/api/medias/upload', {
       method: 'POST',
       body: formData,
     }, true);
@@ -124,7 +123,7 @@ export const dogsService = {
   },
 
   async updateDog(id: string, payload: Partial<CreateDogPayload>): Promise<BackendDogDoc> {
-    const result = await apiFetch<any>(`/api/dog/${id}`, {
+    const result = await apiFetch<{ data?: BackendDogDoc } & BackendDogDoc>(`/api/dog/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -132,7 +131,62 @@ export const dogsService = {
     return result?.data ?? result;
   },
 
+  async getPublicDogByTagId(tagId: string): Promise<BackendDogDoc & { isLost?: boolean; ownerName?: string; ownerPhone?: string; medicalNotes?: string; latitude?: number; longitude?: number }> {
+    const result = await apiFetch<{ data?: BackendDogDoc & { isLost?: boolean; ownerName?: string; ownerPhone?: string; medicalNotes?: string; latitude?: number; longitude?: number } }>(
+      `/api/public/dogs/${tagId}`,
+      {},
+      false,
+    );
+    return result?.data ?? (result as unknown as BackendDogDoc & { isLost?: boolean; ownerName?: string; ownerPhone?: string; medicalNotes?: string; latitude?: number; longitude?: number });
+  },
+
+  async listLostDogs(): Promise<Array<BackendDogDoc & { isLost?: boolean; lastSeenLocation?: string; ownerPhone?: string; latitude?: number; longitude?: number }>> {
+    try {
+      const result = await apiFetch<{ data?: Array<BackendDogDoc & { isLost?: boolean; lastSeenLocation?: string; ownerPhone?: string; latitude?: number; longitude?: number }> }>(
+        `/api/public/dogs/search/lost`,
+        {},
+        false,
+      );
+      return result?.data || (Array.isArray(result) ? result : []);
+    } catch {
+      return [];
+    }
+  },
+
+  async reportFound(tagId: string, locationInfo?: string, contactPhone?: string): Promise<{ success: boolean; message: string }> {
+    return apiFetch<{ success: boolean; message: string }>(
+      `/api/dogs/report-found`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tagId, locationInfo, contactPhone }),
+      },
+      false,
+    );
+  },
+
+  async getBreedBySlug(slug: string, lang = 'en'): Promise<Breed | null> {
+    try {
+      const result = await apiFetch<{ data: BreedListItem }>(`/api/wiki/dogs/slug/${slug}?lang=${lang}`);
+      const breed = result.data;
+      if (!breed) return null;
+      return {
+        id: breed._id,
+        name: breed.breed,
+        slug: breed.slug,
+        description: breed.description,
+        imageUrl: mediaUrl(breed.mediaPath),
+        pokedexNumber: breed.pokedexNumber,
+        origin: breed.origin,
+        group: breed.group,
+        rarityLevel: breed.rarity_level,
+      };
+    } catch {
+      return null;
+    }
+  },
+
   mediaUrl(mediaPath?: string): string | undefined {
-    return mediaUrl(mediaPath);
+    return getCloudinaryUrl(mediaPath);
   },
 };

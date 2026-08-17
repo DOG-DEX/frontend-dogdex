@@ -7,6 +7,7 @@ interface BreedGridCardProps {
   breed: Breed;
   isSelected?: boolean;
   isCollected?: boolean;
+  userEncounterPhoto?: string;
   onSelect: (breed: Breed) => void;
 }
 
@@ -14,6 +15,7 @@ export function BreedGridCard({
   breed,
   isSelected = false,
   isCollected = false,
+  userEncounterPhoto,
   onSelect,
 }: BreedGridCardProps) {
   const isLegendary = breed.isLegendary || false;
@@ -27,6 +29,7 @@ export function BreedGridCard({
 
   const numberDisplay = breed.number || (breed.slug ? breed.slug.slice(0, 3).toUpperCase() : "000");
   const shortName = breed.name.length > 12 ? `${breed.name.slice(0, 11)}.` : breed.name;
+  const displayImageUrl = (isCollected && userEncounterPhoto) ? userEncounterPhoto : breed.imageUrl;
 
   return (
     <div
@@ -41,15 +44,18 @@ export function BreedGridCard({
       <div className="flex w-full justify-between items-center px-1 font-mono text-[10px] font-black text-[#232B26]">
         <span>#{numberDisplay}</span>
         {isCollected && (
-          <span className="h-2 w-2 rounded-full border border-[#232B26] bg-[#00A170]" />
+          <span className="flex items-center gap-1">
+            {userEncounterPhoto && <span className="text-[9px]">📸</span>}
+            <span className="h-2 w-2 rounded-full border border-[#232B26] bg-[#00A170]" />
+          </span>
         )}
       </div>
 
       {/* Image Thumbnail Frame */}
       <div className="relative my-2 aspect-square w-full overflow-hidden rounded-lg border-2 border-[#232B26]/30 bg-white/60">
-        {breed.imageUrl ? (
+        {displayImageUrl ? (
           <Image
-            src={breed.imageUrl}
+            src={displayImageUrl}
             alt={breed.name}
             fill
             unoptimized
