@@ -17,6 +17,7 @@ export interface CustomSelectProps<T extends string = string> {
   buttonClassName?: string;
   dropdownClassName?: string;
   enableSearch?: boolean;
+  placement?: "top" | "bottom" | "auto";
 }
 
 export function CustomSelect<T extends string = string>({
@@ -29,9 +30,11 @@ export function CustomSelect<T extends string = string>({
   buttonClassName = "",
   dropdownClassName = "",
   enableSearch = false,
+  placement = "auto",
 }: CustomSelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [openDirection, setOpenDirection] = useState<"top" | "bottom">("bottom");
   const containerRef = useRef<HTMLDivElement>(null);
 
   const selectedOption = useMemo(() => {
@@ -45,6 +48,26 @@ export function CustomSelect<T extends string = string>({
       (o) => o.label.toLowerCase().includes(q) || o.value.toLowerCase().includes(q)
     );
   }, [options, enableSearch, searchQuery]);
+
+  // Calculate open direction (top vs bottom) based on viewport space
+  useEffect(() => {
+    if (isOpen && containerRef.current) {
+      if (placement === "top") {
+        setOpenDirection("top");
+      } else if (placement === "bottom") {
+        setOpenDirection("bottom");
+      } else {
+        const rect = containerRef.current.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        // If less than 280px below and enough space above, open upwards
+        if (spaceBelow < 280 && rect.top > 260) {
+          setOpenDirection("top");
+        } else {
+          setOpenDirection("bottom");
+        }
+      }
+    }
+  }, [isOpen, placement]);
 
   // Close on outside click
   useEffect(() => {
@@ -62,7 +85,10 @@ export function CustomSelect<T extends string = string>({
   }, [isOpen]);
 
   return (
-    <div className={`relative w-full ${className}`} ref={containerRef}>
+    <div
+      className={`relative w-full ${isOpen ? "z-50" : "z-10"} ${className}`}
+      ref={containerRef}
+    >
       <button
         type="button"
         disabled={disabled}
@@ -83,7 +109,9 @@ export function CustomSelect<T extends string = string>({
 
       {isOpen && (
         <div
-          className={`absolute left-0 right-0 top-full z-[9999] mt-2 max-h-60 overflow-hidden rounded-2xl border-4 border-[#232B26] bg-white p-2 shadow-[8px_8px_0px_#232B26] transition-all duration-300 ease-out ${dropdownClassName}`}
+          className={`absolute left-0 right-0 z-[9999] max-h-72 overflow-hidden rounded-2xl border-4 border-[#232B26] bg-white p-2 shadow-[8px_8px_0px_#232B26] transition-all duration-200 ease-out ${
+            openDirection === "top" ? "bottom-full mb-2" : "top-full mt-2"
+          } ${dropdownClassName}`}
         >
           {enableSearch && (
             <div className="mb-2 p-1">
@@ -92,13 +120,14 @@ export function CustomSelect<T extends string = string>({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search..."
+                autoFocus
                 className="w-full rounded-xl border-2 border-[#232B26] bg-[#F0EDE6] px-3 py-1.5 font-mono text-xs font-bold text-[#232B26] focus:bg-white focus:outline-none"
                 onClick={(e) => e.stopPropagation()}
               />
             </div>
           )}
 
-          <div className="max-h-48 overflow-y-auto custom-scrollbar flex flex-col gap-1">
+          <div className="max-h-52 overflow-y-auto custom-scrollbar flex flex-col gap-1">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((opt) => (
                 <button
@@ -109,19 +138,19 @@ export function CustomSelect<T extends string = string>({
                     setIsOpen(false);
                     setSearchQuery("");
                   }}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 font-mono text-xs font-bold transition text-left ${
+                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2 font-mono text-xs font-bold transition text-left ${
                     opt.value === value
                       ? "bg-[#00A170] text-white shadow-sm"
                       : "text-[#232B26] hover:bg-[#FFD6A5]"
                   }`}
                 >
                   <span>{opt.label}</span>
-                  {opt.value === value && <span className="text-xs">✓</span>}
+                  {opt.value === value && <span className="text-xs font-black">✓</span>}
                 </button>
               ))
             ) : (
               <div className="p-3 text-center font-mono text-xs font-bold text-[#232B26]/60">
-                No matching options
+                Không tìm thấy kết quả
               </div>
             )}
           </div>

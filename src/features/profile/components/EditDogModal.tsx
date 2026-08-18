@@ -6,6 +6,8 @@ import { dogsService, type CreateDogPayload } from "@/features/dogs/services/dog
 import { useToast } from "@/components/ToastContext";
 import type { PetProfile } from "./PetProfileSection";
 
+import { ImageCropperModal } from "@/shared/ui/ImageCropperModal";
+
 type EditDogModalProps = {
   isOpen: boolean;
   pet: PetProfile | null;
@@ -35,6 +37,8 @@ export function EditDogModal({
   });
 
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [rawPhotoToCrop, setRawPhotoToCrop] = useState<File | null>(null);
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isAnalyzingAi, setIsAnalyzingAi] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,25 +62,24 @@ export function EditDogModal({
 
   if (!isOpen || !pet) return null;
 
-  const handlePhotoSelect = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setSelectedPhoto(file);
+    setRawPhotoToCrop(file);
+    setIsCropModalOpen(true);
+    e.target.value = "";
+  };
 
-    // Convert file to permanent base64 data URL
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (reader.result) {
-        setPhotoPreview(reader.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
+  const handleCropComplete = async (croppedFile: File, previewUrl: string) => {
+    setSelectedPhoto(croppedFile);
+    setPhotoPreview(previewUrl);
+    setIsCropModalOpen(false);
 
-    // Trigger AI Breed Detection
+    // Trigger AI Breed Detection on cropped photo
     setIsAnalyzingAi(true);
     try {
-      const detected = await dogsService.predictBreed(file);
+      const detected = await dogsService.predictBreed(croppedFile);
       if (detected) {
         setFormState((prev) => ({ ...prev, breed: detected }));
         toast.info("AI DETECTED BREED", `Identified as ${detected}`);
@@ -299,26 +302,34 @@ export function EditDogModal({
             </label>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t-2 border-[#232B26]/20">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-xl border-2 border-[#232B26] bg-white px-5 py-2.5 font-mono text-xs font-black text-[#232B26] shadow-[2px_2px_0px_#232B26] transition hover:bg-gray-100"
-            >
-              {t("cancelBtn")}
-            </button>
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 pt-4 border-t-2 border-[#232B26]/20">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-xl border-2 border-[#232B26] bg-white px-5 py-2.5 font-mono text-xs font-black text-[#232B26] shadow-[2px_2px_0px_#232B26] transition hover:bg-gray-100"
+              >
+                {t("cancelBtn")}
+              </button>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="rounded-xl border-2 border-[#232B26] bg-[#00A170] px-6 py-2.5 font-mono text-xs font-black uppercase text-white shadow-[3px_3px_0px_#232B26] transition hover:bg-[#00875e]"
-            >
-              {isSubmitting ? t("creatingDog") : t("saveChangesBtn")}
-            </button>
-          </div>
-        </form>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="rounded-xl border-2 border-[#232B26] bg-[#00A170] px-6 py-2.5 font-mono text-xs font-black uppercase text-white shadow-[3px_3px_0px_#232B26] transition hover:bg-[#00875e]"
+              >
+                {isSubmitting ? t("creatingDog") : t("saveChangesBtn")}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Interactive Image Cropper Modal */}
+        <ImageCropperModal
+          isOpen={isCropModalOpen}
+          imageFile={rawPhotoToCrop}
+          onCropComplete={handleCropComplete}
+          onCancel={() => setIsCropModalOpen(false)}
+        />
       </div>
-    </div>
-  );
-}
+    );
+  }

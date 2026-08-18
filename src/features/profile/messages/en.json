@@ -8,7 +8,7 @@
     "favoriteBreedLabel": "FAV:",
     "petSectionTitle": "Pet Profiles",
     "petSectionSubtitle": "Manage your pet records, health notes, and smart QR collar tags.",
-    "addPetBtn": "+ Create Dog Profile",
+    "addPetBtn": "Create Pet Profile",
     "emptyPets": "No pet profiles created yet. Click the button above to create your first pet profile!",
     "editPet": "Edit",
     "deletePet": "Delete",

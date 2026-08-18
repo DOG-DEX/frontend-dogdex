@@ -75,7 +75,7 @@ export const dogsService = {
   },
 
   async createDog(payload: CreateDogPayload): Promise<BackendDogDoc> {
-    const result = await apiFetch<{ data?: BackendDogDoc } & BackendDogDoc>('/api/dog', {
+    const result = await apiFetch<{ data?: BackendDogDoc } & BackendDogDoc>('/api/pets', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -84,7 +84,7 @@ export const dogsService = {
   },
 
   async listMyDogs(): Promise<BackendDogDoc[]> {
-    const result = await apiFetch<{ data?: BackendDogDoc[] } | BackendDogDoc[]>('/api/dog/my-dogs', {}, true);
+    const result = await apiFetch<{ data?: BackendDogDoc[] } | BackendDogDoc[]>('/api/pets/my-pets', {}, true);
     if (Array.isArray(result)) return result;
     return result?.data || [];
   },
@@ -103,7 +103,7 @@ export const dogsService = {
   },
 
   async deleteDog(id: string): Promise<void> {
-    await apiFetch(`/api/dog/${id}`, {
+    await apiFetch(`/api/pets/${id}`, {
       method: 'DELETE',
     }, true);
   },
@@ -123,7 +123,7 @@ export const dogsService = {
   },
 
   async updateDog(id: string, payload: Partial<CreateDogPayload>): Promise<BackendDogDoc> {
-    const result = await apiFetch<{ data?: BackendDogDoc } & BackendDogDoc>(`/api/dog/${id}`, {
+    const result = await apiFetch<{ data?: BackendDogDoc } & BackendDogDoc>(`/api/pets/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -133,7 +133,7 @@ export const dogsService = {
 
   async getPublicDogByTagId(tagId: string): Promise<BackendDogDoc & { isLost?: boolean; ownerName?: string; ownerPhone?: string; medicalNotes?: string; latitude?: number; longitude?: number }> {
     const result = await apiFetch<{ data?: BackendDogDoc & { isLost?: boolean; ownerName?: string; ownerPhone?: string; medicalNotes?: string; latitude?: number; longitude?: number } }>(
-      `/api/public/dogs/${tagId}`,
+      `/api/pets/public/${tagId}`,
       {},
       false,
     );
@@ -143,7 +143,7 @@ export const dogsService = {
   async listLostDogs(): Promise<Array<BackendDogDoc & { isLost?: boolean; lastSeenLocation?: string; ownerPhone?: string; latitude?: number; longitude?: number }>> {
     try {
       const result = await apiFetch<{ data?: Array<BackendDogDoc & { isLost?: boolean; lastSeenLocation?: string; ownerPhone?: string; latitude?: number; longitude?: number }> }>(
-        `/api/public/dogs/search/lost`,
+        `/api/pets/search/lost`,
         {},
         false,
       );
@@ -155,11 +155,11 @@ export const dogsService = {
 
   async reportFound(tagId: string, locationInfo?: string, contactPhone?: string): Promise<{ success: boolean; message: string }> {
     return apiFetch<{ success: boolean; message: string }>(
-      `/api/dogs/report-found`,
+      `/api/pets/report-found`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tagId, locationInfo, contactPhone }),
+        body: JSON.stringify({ petId: tagId, locationInfo, contactPhone }),
       },
       false,
     );
@@ -190,3 +190,5 @@ export const dogsService = {
     return getCloudinaryUrl(mediaPath);
   },
 };
+
+export const petsService = dogsService;

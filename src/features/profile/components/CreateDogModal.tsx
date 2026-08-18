@@ -12,6 +12,8 @@ type CreateDogModalProps = {
   onDogCreated: (createdDog: unknown) => void;
 };
 
+import { ImageCropperModal } from "@/shared/ui/ImageCropperModal";
+
 export function CreateDogModal({
   isOpen,
   onClose,
@@ -32,6 +34,8 @@ export function CreateDogModal({
   });
 
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [rawPhotoToCrop, setRawPhotoToCrop] = useState<File | null>(null);
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isAnalyzingAi, setIsAnalyzingAi] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,25 +43,24 @@ export function CreateDogModal({
 
   if (!isOpen) return null;
 
-  const handlePhotoSelect = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setSelectedPhoto(file);
+    setRawPhotoToCrop(file);
+    setIsCropModalOpen(true);
+    e.target.value = "";
+  };
 
-    // Convert file to permanent base64 data URL
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (reader.result) {
-        setPhotoPreview(reader.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
+  const handleCropComplete = async (croppedFile: File, previewUrl: string) => {
+    setSelectedPhoto(croppedFile);
+    setPhotoPreview(previewUrl);
+    setIsCropModalOpen(false);
 
-    // Trigger AI Breed Detection
+    // Trigger AI Breed Detection on the cropped face
     setIsAnalyzingAi(true);
     try {
-      const detected = await dogsService.predictBreed(file);
+      const detected = await dogsService.predictBreed(croppedFile);
       if (detected) {
         setAiDetectedBreed(detected);
         setFormState((prev) => ({ ...prev, breed: detected }));
@@ -397,6 +400,14 @@ export function CreateDogModal({
           </form>
         </div>
       </div>
+
+      {/* Interactive Image Cropper Modal */}
+      <ImageCropperModal
+        isOpen={isCropModalOpen}
+        imageFile={rawPhotoToCrop}
+        onCropComplete={handleCropComplete}
+        onCancel={() => setIsCropModalOpen(false)}
+      />
     </div>
   );
 }

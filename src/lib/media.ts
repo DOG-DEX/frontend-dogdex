@@ -40,7 +40,9 @@ export function getCloudinaryUrl(mediaPath?: string): string | undefined {
     return clean;
   }
 
+  // Strip leading slashes
   clean = clean.replace(/^\/+/, '');
+
   return `https://res.cloudinary.com/${cloudName}/image/upload/${clean}`;
 }
 

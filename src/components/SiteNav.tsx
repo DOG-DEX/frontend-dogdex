@@ -183,9 +183,9 @@ export function SiteNav() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b-4 border-[#1A1C1B] bg-white px-4 py-3 shadow-brutal-sm md:px-6 md:py-3.5">
-        <nav className="mx-auto grid max-w-6xl grid-cols-2 items-center md:grid-cols-3">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           {/* ── Column 1: Brand Logo (Left) ── */}
-          <div className="flex items-center justify-start">
+          <div className="flex shrink-0 items-center justify-start">
             <Link
               href="/"
               className="flex items-center gap-2 text-xl font-black tracking-tight text-[#00A170]"
@@ -205,13 +205,13 @@ export function SiteNav() {
           </div>
 
           {/* ── Column 2: Desktop Morphic Sliding Active Pill Container (Center) ── */}
-          <div className="hidden items-center justify-center md:flex">
+          <div className="hidden items-center justify-center lg:flex">
             <div
               ref={containerRef}
-              className="relative flex items-center rounded-full border-2 border-[#1A1C1B] bg-[#F0EDE6] p-1.5 shadow-[2px_2px_0px_#1A1C1B]"
+              className="relative flex items-center rounded-full border-2 border-[#1A1C1B] bg-[#F0EDE6] p-1 shadow-[2px_2px_0px_#1A1C1B] xl:p-1.5"
             >
               <span
-                className="pointer-events-none absolute top-1.5 bottom-1.5 rounded-full border-2 border-[#1A1C1B] bg-[#00A170] shadow-[2px_2px_0px_#1A1C1B] transition-all duration-300 ease-out"
+                className="pointer-events-none absolute top-1 bottom-1 rounded-full border-2 border-[#1A1C1B] bg-[#00A170] shadow-[2px_2px_0px_#1A1C1B] transition-all duration-300 ease-out xl:top-1.5 xl:bottom-1.5"
                 style={{
                   left: `${pillStyle.left}px`,
                   width: `${pillStyle.width}px`,
@@ -219,7 +219,7 @@ export function SiteNav() {
                 }}
               />
 
-              <ul className="relative z-10 flex items-center gap-1.5 text-xs font-black uppercase">
+              <ul className="relative z-10 flex items-center gap-1 text-[11px] font-black uppercase xl:gap-1.5 xl:text-xs">
                 {NAV_CONFIG.map((item, index) => {
                   const active = isActiveRoute(item.href);
                   return (
@@ -229,7 +229,7 @@ export function SiteNav() {
                           tabsRef.current[index] = el;
                         }}
                         href={item.href}
-                        className={`inline-flex items-center justify-center text-center rounded-full px-4 py-1.5 whitespace-nowrap transition-colors duration-200 ${
+                        className={`inline-flex items-center justify-center text-center rounded-full px-2.5 py-1 whitespace-nowrap transition-colors duration-200 xl:px-4 xl:py-1.5 ${
                           active
                             ? "font-black text-white"
                             : "text-[#1A1C1B] hover:text-[#00A170]"
@@ -245,9 +245,9 @@ export function SiteNav() {
           </div>
 
           {/* ── Column 3: Right Action Controls & Mobile Hamburger ── */}
-          <div className="flex items-center justify-end gap-2.5">
+          <div className="flex shrink-0 items-center justify-end gap-2.5">
             {/* Desktop Action Controls */}
-            <div className="hidden items-center gap-2.5 md:flex">
+            <div className="hidden items-center gap-2.5 lg:flex">
               {currentUser ? (
                 <>
                   {/* QR Scanner Action Button */}
@@ -379,7 +379,7 @@ export function SiteNav() {
             <button
               type="button"
               onClick={() => setIsDrawerOpen(true)}
-              className="flex items-center justify-center rounded-xl border-2 border-[#1A1C1B] bg-[#F0EDE6] p-2 shadow-[2px_2px_0px_#1A1C1B] transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1A1C1B] md:hidden"
+              className="flex items-center justify-center rounded-xl border-2 border-[#1A1C1B] bg-[#F0EDE6] p-2 shadow-[2px_2px_0px_#1A1C1B] transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1A1C1B] lg:hidden"
               aria-label="Open navigation menu"
             >
               <svg
@@ -408,7 +408,7 @@ export function SiteNav() {
 
       {/* Backdrop overlay */}
       <div
-        className={`fixed inset-0 z-[60] bg-[#1A1C1B]/50 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-[60] bg-[#1A1C1B]/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           isDrawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsDrawerOpen(false)}
@@ -417,7 +417,7 @@ export function SiteNav() {
 
       {/* Drawer panel */}
       <aside
-        className={`fixed top-0 right-0 z-[70] flex h-full w-[85vw] max-w-[340px] flex-col border-l-4 border-[#1A1C1B] bg-[#F0EDE6] shadow-[-8px_0px_0px_#1A1C1B] transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed top-0 right-0 z-[70] flex h-full w-[85vw] max-w-[340px] flex-col border-l-4 border-[#1A1C1B] bg-[#F0EDE6] shadow-[-8px_0px_0px_#1A1C1B] transition-transform duration-300 ease-out lg:hidden ${
           isDrawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

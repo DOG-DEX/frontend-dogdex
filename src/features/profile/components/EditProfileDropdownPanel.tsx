@@ -34,8 +34,8 @@ export function EditProfileDropdownPanel({
   const [prevIsOpen, setPrevIsOpen] = useState(false);
   const [prevInitialData, setPrevInitialData] = useState<Partial<UserProfile> | null>(null);
 
+  const email = initialData.email || "";
   const [username, setUsername] = useState(initialData.username || "");
-  const [email] = useState(initialData.email || "");
   const [firstName, setFirstName] = useState(initialData.firstName || "");
   const [lastName, setLastName] = useState(initialData.lastName || "");
   const [selectedCountryCode, setSelectedCountryCode] = useState("VN");
@@ -127,13 +127,13 @@ export function EditProfileDropdownPanel({
 
   return (
     <div
-      className={`relative z-30 transition-all duration-500 ease-in-out ${
+      className={`relative z-40 transition-all duration-500 ease-in-out ${
         isOpen
           ? "max-h-[2000px] opacity-100 py-4 overflow-visible"
           : "max-h-0 opacity-0 py-0 overflow-hidden"
       }`}
     >
-      <div className="rounded-3xl border border-[#232B26]/15 bg-white/90 p-6 shadow-2xl backdrop-blur-xl md:p-8">
+      <div className="rounded-3xl border border-[#232B26]/15 bg-white/95 p-6 shadow-2xl backdrop-blur-xl md:p-8 overflow-visible">
         <div className="mb-6 flex items-center justify-between border-b border-[#232B26]/10 pb-4">
           <div>
             <h2 className="text-xl font-black text-[#232B26]">Edit Profile Details</h2>

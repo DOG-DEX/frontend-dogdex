@@ -13,10 +13,10 @@ import { dogsService } from "@/features/dogs/services/dogs.service";
 import { useToast } from "@/components/ToastContext";
 
 const fallbackUser: AuthUser = {
-  id: "guest",
-  username: "trainer",
-  email: "trainer@dogdex.local",
-  role: "member",
+  id: "",
+  username: "",
+  email: "",
+  role: "user",
 };
 
 const userSnapshotFallback = JSON.stringify(fallbackUser);
@@ -58,6 +58,7 @@ export function ProfileView() {
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const [profileData, setProfileData] = useState<Partial<UserProfile>>(() => ({
     id: authUser.id,
     username: authUser.username,
@@ -167,9 +168,9 @@ export function ProfileView() {
     <section className="bg-[#F0EDE6] px-4 py-6 md:px-8 md:py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-6">
         {/* Main Cover Header Card */}
-        <header className="relative min-h-[340px] overflow-hidden rounded-[2.5rem] border-4 border-[#232B26] bg-[#232B26] shadow-[12px_12px_0px_#232B26]">
+        <header className="relative min-h-[340px] overflow-hidden rounded-[2.5rem] border-4 border-[#232B26] bg-[#232B26] shadow-[12px_12px_0px_#232B26] [transform:translateZ(0)] isolate">
           {/* Canvas Background */}
-          <div className="absolute inset-0 z-0 bg-[#232B26]">
+          <div className="absolute inset-0 z-0 overflow-hidden rounded-[2.25rem] [clip-path:inset(0_round_2.25rem)] [transform:translateZ(0)] bg-[#232B26]">
             <Dither
               waveColor={[1.0, 1.0, 1.0]}
               disableAnimation={false}
@@ -225,12 +226,13 @@ export function ProfileView() {
                 disabled={isUploadingAvatar}
               />
 
-              {hasAvatar ? (
+              {hasAvatar && !avatarError ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={dogsService.mediaUrl(profileData.avatarPath || profileData.avatarUrl)}
                   alt={handleUsernameDisplay}
                   className="h-full w-full object-cover"
+                  onError={() => setAvatarError(true)}
                 />
               ) : (
                 <div className="grid h-full w-full place-items-center font-mono text-3xl font-black text-[#232B26] md:text-4xl">

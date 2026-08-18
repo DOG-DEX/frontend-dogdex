@@ -13,6 +13,7 @@ interface CountryStatePickerProps {
   disabled?: boolean;
   className?: string;
   selectClassName?: string;
+  placement?: "top" | "bottom" | "auto";
 }
 
 const allCountries = Country.getAllCountries();
@@ -26,6 +27,7 @@ export const CountryStatePicker = memo(function CountryStatePicker({
   disabled = false,
   className,
   selectClassName,
+  placement = "auto",
 }: CountryStatePickerProps) {
   const countryOptions = useMemo(() => {
     return allCountries.map((c: ICountry) => ({
@@ -64,6 +66,7 @@ export const CountryStatePicker = memo(function CountryStatePicker({
           disabled={disabled}
           enableSearch={true}
           buttonClassName={selectClassName}
+          placement={placement}
         />
       </div>
 
@@ -82,6 +85,7 @@ export const CountryStatePicker = memo(function CountryStatePicker({
               disabled={disabled}
               enableSearch={true}
               buttonClassName={selectClassName}
+              placement={placement}
             />
           ) : (
             <input
