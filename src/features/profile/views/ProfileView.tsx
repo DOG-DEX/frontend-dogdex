@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useSyncExternalStore, ChangeEvent, MouseEvent } from "react";
+import { useMemo, useState, useEffect, useSyncExternalStore, ChangeEvent } from "react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { authService } from "@/features/auth/services/auth.service";
@@ -150,32 +150,12 @@ export function ProfileView() {
         "Avatar Updated",
         "Your profile picture has been updated successfully."
       );
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Could not update avatar. Please try again.";
       toast.error(
         "Upload Failed",
-        err.message || "Could not update avatar. Please try again."
+        msg
       );
-    } finally {
-      setIsUploadingAvatar(false);
-    }
-  };
-
-  // Remove current avatar photo
-  const handleRemoveAvatar = async (e: MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setIsUploadingAvatar(true);
-    try {
-      const updated = await profileService.updateProfile({
-        avatarPath: "",
-      });
-      setProfileData(updated);
-      toast.success(
-        "Avatar Removed",
-        "Your profile picture has been reset to default."
-      );
-    } catch (err: any) {
-      toast.error("Error", err.message || "Failed to remove avatar.");
     } finally {
       setIsUploadingAvatar(false);
     }

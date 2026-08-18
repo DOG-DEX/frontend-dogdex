@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { QRCodeSVG } from "qrcode.react";
 import { dogsService } from "@/features/dogs/services/dogs.service";
@@ -20,7 +20,7 @@ export type PetProfile = {
   avatarUrl?: string;
 };
 
-function getPetPhoto(pet: PetProfile): string {
+function getPetPhoto(pet: Partial<PetProfile>): string {
   if (pet.avatarUrl && pet.avatarUrl.trim() !== "" && !pet.avatarUrl.startsWith("blob:")) {
     return pet.avatarUrl;
   }
@@ -55,9 +55,7 @@ export function PetProfileSection() {
   const [isCopied, setIsCopied] = useState(false);
   const qrSvgRef = useRef<SVGSVGElement | null>(null);
 
-  // Load real dogs from NestJS Backend API
-  const loadBackendDogs = async () => {
-    setIsLoading(true);
+  const loadBackendDogs = useCallback(async () => {
     try {
       const backendDogs = await dogsService.listMyDogs();
       if (backendDogs && Array.isArray(backendDogs)) {
@@ -75,36 +73,77 @@ export function PetProfileSection() {
             notes: `${d.attributes?.pattern ? `Pattern: ${d.attributes.pattern}. ` : ""}${
               d.sterilized ? "Sterilized/Fixed." : ""
             }`,
-            avatarUrl: dogsService.mediaUrl(d.avatarPath) || getPetPhoto({ breed: d.breed } as any),
+            avatarUrl: dogsService.mediaUrl(d.avatarPath) || getPetPhoto({ breed: d.breed }),
           };
         });
         setPets(mapped);
       } else {
         setPets([]);
       }
-    } catch (err: any) {
-      toast.error("FETCH ERROR", err.message || "Failed to fetch pet profiles from backend server.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to fetch pet profiles from backend server.";
+      toast.error("FETCH ERROR", msg);
       setPets([]);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
 
   useEffect(() => {
-    loadBackendDogs();
-  }, []);
+    let active = true;
+    dogsService.listMyDogs()
+      .then((backendDogs) => {
+        if (!active) return;
+        if (backendDogs && Array.isArray(backendDogs)) {
+          const mapped: PetProfile[] = backendDogs.map((d) => {
+            const breedShort = (d.breed || "DOG").substring(0, 4).toUpperCase();
+            const idShort = (d.id || "0000").substring(0, 4).toUpperCase();
+            return {
+              id: d.id,
+              name: d.name,
+              breed: d.breed || "Mixed Breed",
+              age: d.birthday ? `${new Date(d.birthday).getFullYear()}` : "1 yr",
+              gender: d.gender === "female" ? "Female" : "Male",
+              tagId: `DD-${breedShort}-${idShort}`,
+              color: d.attributes?.color || "Standard",
+              notes: `${d.attributes?.pattern ? `Pattern: ${d.attributes.pattern}. ` : ""}${
+                d.sterilized ? "Sterilized/Fixed." : ""
+              }`,
+              avatarUrl: dogsService.mediaUrl(d.avatarPath) || getPetPhoto({ breed: d.breed }),
+            };
+          });
+          setPets(mapped);
+        } else {
+          setPets([]);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!active) return;
+        const msg = err instanceof Error ? err.message : "Failed to fetch pet profiles from backend server.";
+        toast.error("FETCH ERROR", msg);
+        setPets([]);
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [toast]);
 
   const handleDelete = async (id: string, name: string) => {
     try {
       await dogsService.deleteDog(id);
       toast.success("DOG DELETED", `Profile for "${name}" has been deleted.`);
-    } catch (err: any) {
-      toast.error("DELETE FAILED", err.message || "Could not delete dog profile.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Could not delete dog profile.";
+      toast.error("DELETE FAILED", msg);
     }
     setPets((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const handleDogCreated = (_createdDog: any) => {
+  const handleDogCreated = () => {
     loadBackendDogs();
   };
 

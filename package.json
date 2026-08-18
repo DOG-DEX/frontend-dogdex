@@ -13,6 +13,7 @@
     "@react-three/postprocessing": "^3.0.4",
     "clsx": "^2.1.1",
     "country-state-city": "^3.2.1",
+    "leaflet": "^1.9.4",
     "motion": "^12.42.2",
     "next": "16.2.11",
     "next-intl": "4.13.4",
@@ -20,6 +21,7 @@
     "qrcode.react": "^4.2.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-leaflet": "^5.0.0",
     "sharp": "^0.35.0",
     "tailwind-merge": "^3.3.1",
     "three": "^0.182.0",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/leaflet": "^1.9.22",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -37,7 +40,9 @@
     "typescript": "^5"
   },
   "overrides": {
-    "sharp": "^0.35.0",
-    "postcss": "^8.5.18"
+    "nanoid": "^5.0.9",
+    "postcss": "^8.5.18",
+    "js-yaml": "^4.1.0",
+    "sharp": "^0.35.0"
   }
 }

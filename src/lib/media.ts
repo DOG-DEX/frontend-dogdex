@@ -35,7 +35,10 @@ export function getCloudinaryUrl(mediaPath?: string): string | undefined {
     return clean;
   }
 
-  const cloudName = env.cloudinaryCloudName || 'dtlp3p1sa';
+  const cloudName = env.cloudinaryCloudName;
+  if (!cloudName) {
+    return clean;
+  }
 
   clean = clean.replace(/^\/+/, '');
   return `https://res.cloudinary.com/${cloudName}/image/upload/${clean}`;

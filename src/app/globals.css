@@ -1,4 +1,13 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* Force Leaflet map container to occupy 100% full height and width */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #1a221e !important;
+  z-index: 1;
+}
 
 /* ==========================================================================
    1. DESIGN TOKENS (Neo-Brutalist Pop Palette for Dog Dex)

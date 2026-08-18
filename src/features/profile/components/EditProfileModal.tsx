@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 
 export type ProfileData = {
@@ -25,11 +25,16 @@ export function EditProfileModal({
   onSave,
 }: EditProfileModalProps) {
   const t = useTranslations("ProfileView");
+  const [prevData, setPrevData] = useState<{ isOpen: boolean; data: ProfileData }>({
+    isOpen,
+    data: initialData,
+  });
   const [formState, setFormState] = useState<ProfileData>(initialData);
 
-  useEffect(() => {
+  if (prevData.isOpen !== isOpen || prevData.data !== initialData) {
+    setPrevData({ isOpen, data: initialData });
     setFormState(initialData);
-  }, [initialData, isOpen]);
+  }
 
   if (!isOpen) return null;
 

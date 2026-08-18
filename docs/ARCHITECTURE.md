@@ -2,7 +2,26 @@
 
 This is the frontend source of truth for developers and coding agents. It uses Next.js App Router and a feature-sliced structure.
 
-## Source layout
+---
+
+## 1. System Topology Overview
+
+```text
++-------------------+        HTTP/JSON (JWT Cookie)       +-------------------+
+|    Next.js FE     | ----------------------------------> |    NestJS API     |
+|   (App Router)    | <---------------------------------- | (Feature Modules) |
++-------------------+         SWR Hydration (0ms)         +-------------------+
+          |                                                         |
+          v                                                         v
++-------------------+                                     +-------------------+
+|  Client RAM/Disk  |                                     | MongoDB + Redis   |
+| (Tiles/GPS/Dex)   |                                     | (Durable State)   |
++-------------------+                                     +-------------------+
+```
+
+---
+
+## 2. Source Layout
 
 ```text
 src/
@@ -19,12 +38,13 @@ src/
   lib/                           # infrastructure: env, api client, generic utilities
   shared/
     constants/ hooks/ types/ ui/ # reusable, feature-independent code
-  proxy.ts                       # locale routing proxy
 ```
 
 `app` composes a view; it does not own business behavior. `features` own business behavior. `shared` never imports a feature.
 
-## Dependency direction
+---
+
+## 3. Dependency Direction
 
 ```text
 app -> features -> shared / lib
@@ -36,10 +56,12 @@ lib -> no React feature imports
 
 If code needs to import from a sibling feature, move its reusable portion to `shared` or define a composition boundary in `app`.
 
-## Decision table: where code belongs
+---
+
+## 4. Decision Table: Where Code Belongs
 
 | Need | Place it in | Do not put it in |
-|---|---|---|
+| :--- | :--- | :--- |
 | URL, route layout, page metadata | `app/` | Feature services/components |
 | A complete screen for one business area | `features/<feature>/views` | `app/page.tsx` |
 | UI reused only by one feature | `features/<feature>/components` | `shared/ui` |
@@ -52,62 +74,12 @@ If code needs to import from a sibling feature, move its reusable portion to `sh
 | Type shared by two or more independent features | `shared/types` | Duplicate type declarations |
 | Translation copy | feature/global `messages` | Inline strings in components |
 
-## Component and state rules
+---
+
+## 5. Component and State Rules
 
 - A view composes feature components and a feature hook; it should not make raw API calls.
+- Encapsulate all API logic strictly inside Service layer (`dogs.service.ts`, `auth.service.ts`, `scan.service.ts`).
 - Create a component when a visual unit is reused, independently testable, or makes a parent hard to read. Do not split simple markup into one-file components merely to reduce line count.
-- Create a custom hook when state/effects/event orchestration are reused or obscure the view. A pure formatter remains a utility.
 - Use server components by default. Add `'use client'` only for browser APIs, event handlers, client state, or client-only libraries.
-- Keep browser-only storage access behind a service/hook and guard it from SSR (`typeof window !== 'undefined'`).
-- Do not mirror derived props in state; derive them during render with `useMemo` only when calculation is expensive.
-
-## API contract rules
-
-The Nest backend returns success as `{ data: ... }` and standardized error payloads. `src/lib/api.ts` is the one client responsible for base URL, authentication header, unwrapping, and error conversion.
-
-```ts
-// service: maps backend payload to the feature UI contract
-export const dogsService = {
-  async listBreeds(): Promise<Breed[]> {
-    const result = await apiFetch<BreedListPayload>('/api/wiki/dogs');
-    return result.data.map(toBreed);
-  },
-};
-```
-
-Rules:
-
-- No raw `fetch` in a view or reusable component.
-- Never expose a backend Mongo document directly as a UI type; map it in the service.
-- A service throws an `Error` with a user-safe message; the view decides how to render toast, inline error, retry, or empty state.
-- Protected calls pass `requiresAuth: true`; do not manually repeat authorization headers.
-- When a feature needs refresh-token handling, add it once to the API/auth boundary, not to every service.
-
-## Errors, loading, and form validation
-
-- Route-wide rendering failures: `app/**/error.tsx`.
-- Route-wide loading: `app/**/loading.tsx`.
-- Expected API/form errors: feature view/hook state with accessible inline feedback or toast.
-- Client validation improves UX; backend DTO validation remains authoritative.
-- Every async screen needs loading, empty, error, and success states before it is called implemented.
-
-## Naming conventions
-
-| Kind | Convention | Example |
-|---|---|---|
-| Component / view | PascalCase | `ScanView.tsx` |
-| Hook | `use` + camelCase | `useScanUpload.ts` |
-| Service | camelCase + `.service.ts` | `scan.service.ts` |
-| Feature API payload | PascalCase + suffix | `PredictionSubmission` |
-| Generic utility | camelCase | `formatDate.ts` |
-
-## Definition of done
-
-- [ ] Route remains a thin wrapper around a feature view.
-- [ ] API call lives in a feature service and uses `apiFetch`.
-- [ ] UI has loading, error, empty, and success states where applicable.
-- [ ] Types are placed at the narrowest valid scope.
-- [ ] New copy is localized.
-- [ ] No secret is exposed through `NEXT_PUBLIC_*` unless it is intentionally public.
-- [ ] `npm run lint`, `npm run build`, and `pnpm audit --prod` pass.
-- [ ] Update feature progress docs when route/capability status changes.
+- Never use emojis or icons in markdown documentation files.
